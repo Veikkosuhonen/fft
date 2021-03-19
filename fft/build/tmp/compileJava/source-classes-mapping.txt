@@ -1,8 +1,0 @@
-com/github/veikkosuhonen/fftapp/fft/FFT.java
- com.github.veikkosuhonen.fftapp.fft.FFT
-com/github/veikkosuhonen/fftapp/fft/MockFFT.java
- com.github.veikkosuhonen.fftapp.fft.MockFFT
-com/github/veikkosuhonen/fftapp/fft/Nd4jBackendLoader.java
- com.github.veikkosuhonen.fftapp.fft.Nd4jBackendLoader
-com/github/veikkosuhonen/fftapp/fft/MathFuncs.java
- com.github.veikkosuhonen.fftapp.fft.MathFuncs
