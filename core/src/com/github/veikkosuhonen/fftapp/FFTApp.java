@@ -62,9 +62,6 @@ public class FFTApp extends ApplicationAdapter {
 
 		shader.bind();
 		mesh.render(shader, GL20.GL_TRIANGLES);
-
-
-
 	}
 	
 	@Override
