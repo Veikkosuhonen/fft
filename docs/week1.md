@@ -19,3 +19,5 @@ There also seems to be countless different optimizations and methods for the FFT
 Next week my goal is to implement a test suite to validate a discrete Fourier transform algorithm in a few simple cases (for example calculating the frequency of a single sine wave) and
 another test suite to test the speed. After the validation tests are ready I also plan to implement a simple naive DFT. If I have extra time I will work on a simple FFT algorithm 
 and the application rendering and audio streaming.
+
+Hours worked this week: 6
