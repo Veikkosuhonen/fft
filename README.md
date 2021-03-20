@@ -10,7 +10,7 @@ The implementation is in the `core` module.
 
 ## Docs
 
-### [Design document]()
+### [Design document](https://github.com/Veikkosuhonen/fft/blob/main/docs/design_document.md)
 
 ### Weekly reports
 
