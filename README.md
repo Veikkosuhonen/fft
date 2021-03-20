@@ -14,4 +14,4 @@ The implementation is in the `core` module.
 
 ### Weekly reports
 
-[week 1]()
+[week 1](https://github.com/Veikkosuhonen/fft/blob/main/docs/week1.md)
