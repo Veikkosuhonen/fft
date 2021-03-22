@@ -76,5 +76,8 @@ project(":fft") {
         api "org.nd4j:nd4j-api:1.0.0-beta7"
         implementation "org.nd4j:nd4j-cuda-10.2-platform:1.0.0-beta7"
         implementation "org.slf4j:slf4j-nop:1.7.26"
+
+        //JFreeChart
+        implementation "org.jfree:jfreechart:1.5.2"
     }
 }

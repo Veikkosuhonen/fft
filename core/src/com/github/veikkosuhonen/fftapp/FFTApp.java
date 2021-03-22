@@ -2,27 +2,25 @@ package com.github.veikkosuhonen.fftapp;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.AudioDevice;
-import com.badlogic.gdx.audio.AudioRecorder;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.github.veikkosuhonen.fftapp.fft.FFT;
-import com.github.veikkosuhonen.fftapp.fft.MockFFT;
+import com.github.veikkosuhonen.fftapp.audio.SoundPlayer;
+import com.github.veikkosuhonen.fftapp.fft.DFT;
 
 public class FFTApp extends ApplicationAdapter {
 	SpriteBatch batch;
 	Texture img;
-	FFT fft;
+	DFT fft;
 
 	ShaderProgram shader;
 	Mesh mesh;
 
-	AudioRecorder recorder;
-	AudioDevice device;
+	SoundPlayer player;
+
 
 	@Override
 	public void create () {
@@ -39,28 +37,17 @@ public class FFTApp extends ApplicationAdapter {
 				-0.5f, 0.5f, 0f});
 		mesh.setIndices(new short[] {0, 1, 2, 2, 3, 0});
 
-		Thread audio = new Thread() {
-			@Override
-			public void run() {
-				recorder = Gdx.audio.newAudioRecorder(22050, true);
-				device = Gdx.audio.newAudioDevice(22050, true);
-				while (true) {
-					short[] pcm = new short[1024];
-					recorder.read(pcm, 0, pcm.length);
-					device.writeSamples(pcm, 0, pcm.length);
-				}
-			}
-		};
-		audio.start();
-
+		player = new SoundPlayer("C:\\Users\\Veikko\\IdeaProjects\\sound\\Crystallized.wav", 1024);
+		player.start();
 	}
 
 	@Override
 	public void render () {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
+		img.bind();
 		shader.bind();
+		shader.setUniformf("u_resolution", Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		mesh.render(shader, GL20.GL_TRIANGLES);
 	}
 	
