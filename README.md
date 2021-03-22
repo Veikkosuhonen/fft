@@ -10,8 +10,8 @@ The implementation is in the `core` module.
 
 ## Docs
 
-### [Design document]()
+### [Design document](https://github.com/Veikkosuhonen/fft/blob/main/docs/design_document.md)
 
 ### Weekly reports
 
-[week 1]()
+[week 1](https://github.com/Veikkosuhonen/fft/blob/main/docs/week1.md)
