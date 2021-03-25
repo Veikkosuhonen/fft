@@ -2,6 +2,9 @@ package com.github.veikkosuhonen.fftapp.fft;
 
 import java.util.Objects;
 
+/**
+ * Represents a complex number with a real and an imaginary part
+ */
 public class Complex {
     public double real, img;
 
@@ -10,15 +13,18 @@ public class Complex {
         this.img = img;
     }
 
-    public void add(Complex c) {
-        this.real += c.real;
-        this.img += c.img;
+    public Complex plus(Complex c) {
+        return new Complex(real + c.real, img + c.img);
     }
 
-    public void mult(Complex c) {
+    public Complex minus(Complex c) {
+        return new Complex(real - c.real, img - c.img);
+    }
+
+    public Complex times(Complex c) {
         double newReal = this.real * c.real - this.img * c.img;
-        this.img = this.real * c.img + this.img * c.real;
-        this.real = newReal;
+        double newImg = this.real * c.img + this.img * c.real;
+        return new Complex(newReal, newImg);
     }
 
     @Override

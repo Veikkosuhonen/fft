@@ -9,8 +9,7 @@ public class ComplexNumberTest {
         Complex a = new Complex(2, 4);
         Complex b = new Complex(-3, 1);
         Complex c = new Complex(-1, 5);
-        a.add(b);
-        Assert.assertEquals(c, a);
+        Assert.assertEquals(c, a.plus(b));
     }
 
     @Test
@@ -18,7 +17,6 @@ public class ComplexNumberTest {
         Complex a = new Complex(3, 2);
         Complex b = new Complex(1, 4);
         Complex c = new Complex(-5, 14);
-        a.mult(b);
-        Assert.assertEquals(c, a);
+        Assert.assertEquals(c, a.times(b));
     }
 }

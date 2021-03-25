@@ -1,5 +1,8 @@
 package utils;
 
+/**
+ * Class for generating signals
+ */
 public class Signal {
 
     public static double[][] generateSine(int N, double K, double phase) {

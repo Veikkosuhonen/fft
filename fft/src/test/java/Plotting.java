@@ -1,5 +1,7 @@
 import com.github.veikkosuhonen.fftapp.fft.DFT;
+import com.github.veikkosuhonen.fftapp.fft.FFT;
 import com.github.veikkosuhonen.fftapp.fft.NaiveDFT;
+import com.github.veikkosuhonen.fftapp.fft.ReferenceFFT;
 import utils.Signal;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -10,13 +12,16 @@ import org.jfree.data.xy.XYSeriesCollection;
 import javax.swing.*;
 import java.awt.*;
 
-public class Plotting{
+/**
+ * Used for visualizing DFT algorithms on generated signal
+ */
+public class Plotting {
 
 
     public static void main(String[] args) {
 
-        double[][] signal = Signal.generateSineComposite(256, new double[]{1.0, 10.0, 100.0});
-        DFT dft = new NaiveDFT();
+        double[][] signal = Signal.generateSineComposite(1024, new double[]{1.0, 10.0, 100.0});
+        DFT dft = new FFT();
         double[][] fx = dft.process(signal);
 
         JPanel panel = new JPanel();
