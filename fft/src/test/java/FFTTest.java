@@ -61,7 +61,5 @@ public class FFTTest {
         System.out.println(Benchmark.benchmarkDFT(fft, samples, 10)/1e6 + " ms");
         DFT dft = new NaiveDFT();
         System.out.println(Benchmark.benchmarkDFT(dft, samples, 10)/1e6 + " ms");
-
-
     }
 }

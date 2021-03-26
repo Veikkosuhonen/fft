@@ -3,7 +3,7 @@ package com.github.veikkosuhonen.fftapp.fft;
 import java.util.Objects;
 
 /**
- * Represents a complex number with a real and an imaginary part
+ * Represents a complex number with a real and an imaginary part in double precision
  */
 public class Complex {
     public double real, img;
