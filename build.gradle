@@ -63,6 +63,7 @@ project(":core") {
 
 project(":fft") {
     apply plugin: "java-library"
+    apply plugin: "jacoco"
 
     dependencies {
 
@@ -79,5 +80,20 @@ project(":fft") {
 
         //JFreeChart
         implementation "org.jfree:jfreechart:1.5.2"
+    }
+
+    test {
+        finalizedBy jacocoTestReport
+    }
+    jacocoTestReport {
+        dependsOn test
+    }
+
+    jacocoTestReport {
+        reports {
+            xml.enabled false
+            csv.enabled false
+            html.destination file("${buildDir}/jacocoHtml")
+        }
     }
 }

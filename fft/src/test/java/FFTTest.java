@@ -30,7 +30,7 @@ public class FFTTest {
     public void testNaiveDFTCorrectness() {
         DFT dft = new NaiveDFT();
 
-        double[][] signal = Signal.generateSineComposite(64, periods);
+        double[][] signal = Signal.generateSineComposite(64, new double[]{1, 3, 5});
         double[][] fx = dft.process(signal);
 
         Assert.assertEquals("Calculates freq 1", 0.5, fx[0][1], 0.001);
