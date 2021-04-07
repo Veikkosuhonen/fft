@@ -22,9 +22,7 @@ public class ArrayUtils {
      * @return The sliced array
      */
     public static float[] slice(float[] arr, int end) {
-        float[] farr = new float[end];
-        System.arraycopy(arr, 0, farr, 0, end);
-        return farr;
+        return slice(arr, 0, end);
     }
 
     /**
@@ -35,8 +33,15 @@ public class ArrayUtils {
      * @return The sliced array
      */
     public static float[] slice(float[] arr, int start, int end) {
-        float[] farr = new float[end];
-        System.arraycopy(arr, start, farr, 0, end - start);
-        return farr;
+        float[] newArr = new float[end];
+        System.arraycopy(arr, start, newArr, 0, end - start);
+        return newArr;
+    }
+
+    public static float[] join(float[] arr1, float[] arr2) {
+        float[] newArr = new float[arr1.length + arr2.length];
+        System.arraycopy(arr1, 0, newArr, 0, arr1.length);
+        System.arraycopy(arr2, 0, newArr, arr1.length, arr2.length);
+        return newArr;
     }
 }

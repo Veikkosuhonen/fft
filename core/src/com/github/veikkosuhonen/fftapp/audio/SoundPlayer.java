@@ -2,15 +2,12 @@ package com.github.veikkosuhonen.fftapp.audio;
 
 import com.github.veikkosuhonen.fftapp.fft.ArrayUtils;
 import com.github.veikkosuhonen.fftapp.fft.DFT;
-import com.github.veikkosuhonen.fftapp.fft.ReferenceFFT;
+import com.github.veikkosuhonen.fftapp.fft.FFT;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.util.ArrayDeque;
-import java.util.Collections;
 import java.util.Iterator;
-import java.util.Scanner;
+import java.util.concurrent.ArrayBlockingQueue;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -25,37 +22,62 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 public class SoundPlayer {
     private File file;
     private Thread sourceThread;
-    int bytesRead;
-    int numBytes;
+    ArrayBlockingQueue<double[]> queue;
+    int chunkSize;
     int bufferSize;
     byte[] audioBytes;
-    public float[] latest;
-    ArrayDeque<double[]> queue;
+    int queue_length = 256;
+    int window = 128;
+    int pollRate;
     DFT fft;
-    int max_queue_length = 8;
 
-    public SoundPlayer(String filePath, int bufferSize) {
+    public SoundPlayer(String filePath, int chunkSize, int bufferSize, int fps) {
+        fft = new FFT();
         file = new File(filePath);
-        bytesRead = 0;
+        queue = new ArrayBlockingQueue<>(queue_length);
+        this.chunkSize = chunkSize;
         this.bufferSize = bufferSize;
-        this.latest = new float[bufferSize];
-        queue = new ArrayDeque<>();
-        fft = new ReferenceFFT();
+        pollRate = (int)( 44100.0 / (fps * chunkSize / 2) );
     }
 
-    public float[] getDFT() {
-        double[] inReal = new double[max_queue_length * bufferSize / 2];
+    public double[] getDFT() {
+        double[] inReal = new double[window * chunkSize];
+        //byte[] inImag = new byte[window * chunkSize / 2];
+
         Iterator<double[]> iter = queue.iterator();
         int i = 0;
-        while (iter.hasNext()) {
+        while (iter.hasNext() && i < window) {
+            System.arraycopy(iter.next(), 0, inReal, i * chunkSize, chunkSize);
+            i++;
+        }
+
+        //System.out.println(pollRate);
+        for (int j = 0; j < pollRate; j++) queue.poll();
+        return fft.process(new double[][]{inReal, new double[inReal.length]})[0];
+    }
+
+    public double[][] getLeftRightDFT() {
+        double[] inLeft = new double[window * chunkSize / 2];
+        double[] inRight = new double[window * chunkSize / 2];
+        //byte[] inImag = new byte[window * chunkSize / 2];
+
+        Iterator<double[]> iter = queue.iterator();
+        int i = 0;
+        while (iter.hasNext() && i < window) {
             double[] chunk = iter.next();
-            for (int j = 1; j < bufferSize; j += 2) {
-                inReal[i * (bufferSize / 2) + j / 2] = chunk[j] / 16.;
+            for (int j = 0; j < chunk.length; j += 2) {
+                inLeft[j / 2 + i * chunkSize / 2] = chunk[j];
+                inRight[j / 2 + i * chunkSize / 2] = chunk[j + 1];
             }
             i++;
         }
-        //double[] real = fft.process(new double[][]{inReal, new double[inReal.length]})[0];
-        return ArrayUtils.slice(ArrayUtils.toFloatArray(inReal), 1000);
+
+        //System.out.println(pollRate);
+        for (int j = 0; j < pollRate; j++) queue.poll();
+
+        return new double[][] {
+                fft.process(new double[][]{inLeft, new double[inLeft.length]})[0],
+                fft.process(new double[][]{inRight, new double[inRight.length]})[0]};
     }
 
     public void start() {
@@ -69,25 +91,22 @@ public class SoundPlayer {
                 @Override
                 public void run() {
                     int bytesPerFrame = stream.getFormat().getFrameSize();
-                    int chunks = 4 * bytesPerFrame;
-                    numBytes = chunks * bufferSize;
+                    int numBytes = bufferSize * bytesPerFrame;
                     audioBytes = new byte[numBytes];
+                    int bytesRead;
                     try {
                         sourceLine.start();
-                        while ((bytesRead = stream.read(audioBytes)) != -1) {
-
-                            for (int i = 0; i < chunks; i++) {
-                                double[] chunk = new double[bufferSize];
-                                for (int j = 0; j < bufferSize; j++) {
-                                    chunk[j] = audioBytes[i * bufferSize + j] / (double) Byte.MAX_VALUE;
-                                }
-
-                                queue.add(chunk);
-                                if (queue.size() > max_queue_length) {
-                                    queue.removeFirst();
+                        //long start = System.currentTimeMillis();
+                        while ((bytesRead = stream.read(audioBytes, 0, numBytes)) != -1) {
+                            double[] chunk = new double[chunkSize];
+                            for (int i = 1; i < bytesRead / 2 && i < numBytes / 2; i++) {
+                                chunk[i % chunkSize] = audioBytes[2 * i - 1];
+                                if (i % chunkSize == chunkSize - 1) {
+                                    queue.offer(chunk);
+                                    chunk = new double[chunkSize];
                                 }
                             }
-                            sourceLine.write(audioBytes, 0, numBytes);
+                            sourceLine.write(audioBytes, 0, bytesRead);
                         }
                     } catch (IOException ioe) {
                         ioe.printStackTrace();
@@ -99,9 +118,7 @@ public class SoundPlayer {
 
             sourceThread.start();
 
-        } catch (LineUnavailableException lue) {lue.printStackTrace();}
-        catch (UnsupportedAudioFileException uafe) {uafe.printStackTrace();}
-        catch (IOException ioe) {ioe.printStackTrace();}
+        } catch (LineUnavailableException | UnsupportedAudioFileException | IOException lue) {lue.printStackTrace();}
     }
     public void stop() {
         sourceThread.interrupt();

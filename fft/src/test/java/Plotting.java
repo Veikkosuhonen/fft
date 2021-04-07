@@ -16,11 +16,11 @@ import java.awt.*;
  * Used for visualizing DFT algorithms on generated signal
  */
 public class Plotting {
-
+    //TODO delete and move to BenchmarkSuite. Make a plotting service class
 
     public static void main(String[] args) {
 
-        double[][] signal = Signal.generateSineComposite(1024, new double[]{1.0, 10.0, 100.0});
+        double[][] signal = Signal.generateSineComposite(128, new double[]{3, 7, 32});
         DFT dft = new FFT();
         double[][] fx = dft.process(signal);
 

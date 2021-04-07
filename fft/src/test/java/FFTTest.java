@@ -1,7 +1,6 @@
 import com.github.veikkosuhonen.fftapp.fft.*;
 import org.junit.Assert;
 import org.junit.Test;
-import utils.Benchmark;
 import com.github.veikkosuhonen.fftapp.fft.ReferenceFFT;
 import utils.Signal;
 
@@ -9,17 +8,16 @@ import java.util.Arrays;
 
 public class FFTTest {
 
-    double[] periods = new double[]{1.0, 10.0, 100.0};
+    double MAX_ERROR = 0.001;
 
     @Test
     public void testNaiveDFTMatchesReference() {
         DFT dft = new NaiveDFT();
         DFT fft = new ReferenceFFT();
 
-        double[][] signal = Signal.generateSine(64, 4.0, Math.PI);
+        double[][] signal = Signal.generateSine(128, 4.0, Math.PI);
 
         double[][] Fx = dft.process(signal);
-
         double[][] rFx = fft.process(signal);
 
         Assert.assertArrayEquals("Real results close to reference", rFx[0], Fx[0], 0.001);
@@ -30,36 +28,63 @@ public class FFTTest {
     public void testNaiveDFTCorrectness() {
         DFT dft = new NaiveDFT();
 
-        double[][] signal = Signal.generateSineComposite(64, new double[]{1, 3, 5});
+        double[][] signal = Signal.generateSineComposite(128, new double[]{3, 10, 28});
         double[][] fx = dft.process(signal);
 
-        Assert.assertEquals("Calculates freq 1", 0.5, fx[0][1], 0.001);
-        Assert.assertEquals("Calculates freq 3", 0.5, fx[0][3], 0.001);
-        Assert.assertEquals("Calculates freq 5", 0.5, fx[0][5], 0.001);
+        Assert.assertEquals("Calculates freq 3", 0.5, fx[0][3], MAX_ERROR);
+        Assert.assertEquals("Calculates freq 10", 0.5, fx[0][10], MAX_ERROR);
+        Assert.assertEquals("Calculates freq 28", 0.5, fx[0][28], MAX_ERROR);
     }
 
     @Test
-    public void tesFFTMatchesReference() {
+    public void testFFTMatchesReference() {
         DFT fft = new FFT();
         DFT rfft = new ReferenceFFT();
 
-        double[][] signal = Signal.generateSineComposite(64, periods);
+        double[][] signal = Signal.generateSineComposite(128, new double[]{1.0, 10.0, 100.0});
 
         double[][] Fx = fft.process(signal);
         double[][] rFx = rfft.process(signal);
 
-        Assert.assertArrayEquals("Real results close to reference", rFx[0], Fx[0], 0.001);
-        Assert.assertArrayEquals("Imaginary results close to reference", rFx[1], Fx[1], 0.001);
+        Assert.assertArrayEquals("Real results close to reference", rFx[0], Fx[0], MAX_ERROR);
+        Assert.assertArrayEquals("Imaginary results close to reference", rFx[1], Fx[1], MAX_ERROR);
     }
 
     @Test
-    public void testDFTPerformance() {
-        int samples = 1024;
+    public void testFFTCorrectness() {
+        DFT dft = new FFT();
+
+        double[][] signal = Signal.generateSineComposite(128, new double[]{3, 10, 28});
+        double[][] fx = dft.process(signal);
+
+        Assert.assertEquals("Calculates freq 3", 0.5, fx[0][3], MAX_ERROR);
+        Assert.assertEquals("Calculates freq 10", 0.5, fx[0][10], MAX_ERROR);
+        Assert.assertEquals("Calculates freq 28", 0.5, fx[0][28], MAX_ERROR);
+    }
+
+    @Test
+    public void testInPlaceFFTMatchesReference() {
+        DFT fft = new InPlaceFFT();
         DFT rfft = new ReferenceFFT();
-        System.out.println(Benchmark.benchmarkDFT(rfft, samples, 10)/1e6 + " ms");
-        DFT fft = new FFT();
-        System.out.println(Benchmark.benchmarkDFT(fft, samples, 10)/1e6 + " ms");
-        DFT dft = new NaiveDFT();
-        System.out.println(Benchmark.benchmarkDFT(dft, samples, 10)/1e6 + " ms");
+
+        double[][] signal = Signal.generateSineComposite(128, new double[]{1.0, 10.0, 100.0});
+
+        double[][] Fx = fft.process(signal);
+        double[][] rFx = rfft.process(signal);
+
+        Assert.assertArrayEquals("Real results close to reference", rFx[0], Fx[0], MAX_ERROR);
+        Assert.assertArrayEquals("Imaginary results close to reference", rFx[1], Fx[1], MAX_ERROR);
+    }
+
+    @Test
+    public void testInPlaceFFTCorrectness() {
+        DFT dft = new InPlaceFFT();
+
+        double[][] signal = Signal.generateSineComposite(32, new double[]{3, 10, 28});
+        double[][] fx = dft.process(signal);
+
+        Assert.assertEquals("Calculates freq 3", 0.5, fx[0][3], MAX_ERROR);
+        Assert.assertEquals("Calculates freq 10", 0.5, fx[0][10], MAX_ERROR);
+        Assert.assertEquals("Calculates freq 28", 0.5, fx[0][28], MAX_ERROR);
     }
 }
