@@ -1,4 +1,4 @@
-package com.github.veikkosuhonen.fftapp.fft;
+package com.github.veikkosuhonen.fftapp.fft.dft;
 
 import org.apache.commons.math3.transform.DftNormalization;
 import org.apache.commons.math3.transform.FastFourierTransformer;

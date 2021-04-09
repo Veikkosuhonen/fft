@@ -1,7 +1,7 @@
-package com.github.veikkosuhonen.fftapp.fft;
+package com.github.veikkosuhonen.fftapp.fft.dft;
 
 /**
- * The DFT interface contains methods to calculate the Discrete Fourier Transform of a signal
+ * The DFT calculates the Discrete Fourier Transform of a complex signal.
  * <a href=https://en.wikipedia.org/wiki/Discrete_Fourier_transform>Wikipedia</a>
  */
 public interface DFT {

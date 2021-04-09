@@ -1,8 +1,8 @@
 package com.github.veikkosuhonen.fftapp.audio;
 
-import com.github.veikkosuhonen.fftapp.fft.ArrayUtils;
-import com.github.veikkosuhonen.fftapp.fft.DFT;
-import com.github.veikkosuhonen.fftapp.fft.FFT;
+import com.github.veikkosuhonen.fftapp.fft.dct.DCT;
+import com.github.veikkosuhonen.fftapp.fft.dct.RealOnlyDFT;
+import com.github.veikkosuhonen.fftapp.fft.dft.InPlaceFFT;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,12 +27,12 @@ public class SoundPlayer {
     int bufferSize;
     byte[] audioBytes;
     int queue_length = 256;
-    int window = 128;
+    int window = 64;
     int pollRate;
-    DFT fft;
+    DCT dct;
 
     public SoundPlayer(String filePath, int chunkSize, int bufferSize, int fps) {
-        fft = new FFT();
+        dct = new RealOnlyDFT(new InPlaceFFT());
         file = new File(filePath);
         queue = new ArrayBlockingQueue<>(queue_length);
         this.chunkSize = chunkSize;
@@ -42,7 +42,6 @@ public class SoundPlayer {
 
     public double[] getDFT() {
         double[] inReal = new double[window * chunkSize];
-        //byte[] inImag = new byte[window * chunkSize / 2];
 
         Iterator<double[]> iter = queue.iterator();
         int i = 0;
@@ -51,15 +50,13 @@ public class SoundPlayer {
             i++;
         }
 
-        //System.out.println(pollRate);
         for (int j = 0; j < pollRate; j++) queue.poll();
-        return fft.process(new double[][]{inReal, new double[inReal.length]})[0];
+        return dct.process(inReal);
     }
 
     public double[][] getLeftRightDFT() {
         double[] inLeft = new double[window * chunkSize / 2];
         double[] inRight = new double[window * chunkSize / 2];
-        //byte[] inImag = new byte[window * chunkSize / 2];
 
         Iterator<double[]> iter = queue.iterator();
         int i = 0;
@@ -72,12 +69,11 @@ public class SoundPlayer {
             i++;
         }
 
-        //System.out.println(pollRate);
         for (int j = 0; j < pollRate; j++) queue.poll();
 
         return new double[][] {
-                fft.process(new double[][]{inLeft, new double[inLeft.length]})[0],
-                fft.process(new double[][]{inRight, new double[inRight.length]})[0]};
+                dct.process(inLeft),
+                dct.process(inRight)};
     }
 
     public void start() {
@@ -96,7 +92,6 @@ public class SoundPlayer {
                     int bytesRead;
                     try {
                         sourceLine.start();
-                        //long start = System.currentTimeMillis();
                         while ((bytesRead = stream.read(audioBytes, 0, numBytes)) != -1) {
                             double[] chunk = new double[chunkSize];
                             for (int i = 1; i < bytesRead / 2 && i < numBytes / 2; i++) {

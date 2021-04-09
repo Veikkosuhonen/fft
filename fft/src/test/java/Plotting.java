@@ -1,7 +1,5 @@
-import com.github.veikkosuhonen.fftapp.fft.DFT;
-import com.github.veikkosuhonen.fftapp.fft.FFT;
-import com.github.veikkosuhonen.fftapp.fft.NaiveDFT;
-import com.github.veikkosuhonen.fftapp.fft.ReferenceFFT;
+import com.github.veikkosuhonen.fftapp.fft.dft.DFT;
+import com.github.veikkosuhonen.fftapp.fft.dft.FFT;
 import utils.Signal;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;

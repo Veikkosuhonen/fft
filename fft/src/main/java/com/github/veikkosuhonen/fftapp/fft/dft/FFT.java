@@ -1,4 +1,6 @@
-package com.github.veikkosuhonen.fftapp.fft;
+package com.github.veikkosuhonen.fftapp.fft.dft;
+
+import com.github.veikkosuhonen.fftapp.fft.utils.Complex;
 
 /**
  * The FFT or Fast Fourier Transform is an efficient implementation of the {@link DFT}

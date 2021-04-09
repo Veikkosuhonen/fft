@@ -1,4 +1,4 @@
-package com.github.veikkosuhonen.fftapp.fft;
+package com.github.veikkosuhonen.fftapp.fft.utils;
 
 public class ArrayUtils {
 

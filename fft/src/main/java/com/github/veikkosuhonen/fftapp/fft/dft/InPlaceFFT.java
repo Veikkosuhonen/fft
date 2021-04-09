@@ -1,6 +1,11 @@
-package com.github.veikkosuhonen.fftapp.fft;
+package com.github.veikkosuhonen.fftapp.fft.dft;
+
+import com.github.veikkosuhonen.fftapp.fft.utils.Complex;
 
 public class InPlaceFFT implements DFT {
+
+    private int[] bitReversalPermutation;
+
     @Override
     public double[][] process(double[][] dataRI) {
         return process(dataRI, true);
@@ -9,6 +14,9 @@ public class InPlaceFFT implements DFT {
     @Override
     public double[][] process(double[][] dataRI, boolean normalize) {
         int n = dataRI[0].length;
+
+        calculateBitReversalPermutation(n);
+
         Complex[] data = new Complex[n];
         for (int i = 0; i < n; i++) {
             data[i] = new Complex(dataRI[0][i], dataRI[1][i]);
@@ -16,14 +24,15 @@ public class InPlaceFFT implements DFT {
         processInPlace(data);
 
         double[][] dataRICopy = new double[2][n];
-        for (int i = 0; i < n; i++) {
-            dataRICopy[0][i] = data[i].real;
-            dataRICopy[1][i] = data[i].img;
-        }
         if (normalize) {
             for (int i = 0; i < dataRI[0].length; i++) {
-                dataRICopy[0][i] /= n;
-                dataRICopy[1][i] /= n;
+                dataRICopy[0][i] = data[i].real / n;
+                dataRICopy[1][i] = data[i].img / n;
+            }
+        } else {
+            for (int i = 0; i < n; i++) {
+                dataRICopy[0][i] = data[i].real;
+                dataRICopy[1][i] = data[i].img;
             }
         }
         return dataRICopy;
@@ -31,11 +40,10 @@ public class InPlaceFFT implements DFT {
 
     private void processInPlace(Complex[] a) {
         int n = a.length;
-        int lg_n = log2ceil(n);
 
         // Reorder the input array by applying bit-reversal permutation
         for (int i = 0; i < n; i++) {
-            int k = reverse(i, lg_n);
+            int k = bitReversalPermutation[i];
             if (i < k) {
                 Complex temp = a[i];
                 a[i] = a[k];
@@ -56,6 +64,18 @@ public class InPlaceFFT implements DFT {
                     w = w.times(wlen);
                 }
             }
+        }
+    }
+
+    private void calculateBitReversalPermutation(int n) {
+        if (bitReversalPermutation != null && bitReversalPermutation.length == n) {
+            return;
+        }
+        bitReversalPermutation = new int[n];
+        int lg_n = log2ceil(n);
+        for (int i = 0; i < n; i++) {
+            int k = reverse(i, lg_n);
+            bitReversalPermutation[i] = k;
         }
     }
 

@@ -4,17 +4,10 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.PixmapTextureData;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.github.veikkosuhonen.fftapp.audio.SoundPlayer;
-import com.github.veikkosuhonen.fftapp.fft.ArrayUtils;
-import com.github.veikkosuhonen.fftapp.fft.DFT;
-import com.github.veikkosuhonen.fftapp.fft.NaiveDFT;
+import com.github.veikkosuhonen.fftapp.fft.utils.ArrayUtils;
 
-import java.nio.Buffer;
-import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
 import java.util.Arrays;
 
 import static com.badlogic.gdx.Gdx.*;
@@ -29,7 +22,7 @@ public class FFTApp extends ApplicationAdapter {
 	SoundPlayer player;
 
 	int BUFFER_SIZE = 512;
-	int CHUNK_SIZE = 128;
+	int CHUNK_SIZE = 64;
 
 	long startTime;
 
@@ -40,7 +33,7 @@ public class FFTApp extends ApplicationAdapter {
 		batch = new SpriteBatch();
 		img = new Texture("badlogic.jpg");
 
-		shader = new ShaderProgram(Gdx.files.internal("test.vert"), Gdx.files.internal("sound_eclipse.frag"));
+		shader = new ShaderProgram(Gdx.files.internal("test.vert"), Gdx.files.internal("test.frag"));
 		shader.bind();
 		System.out.println(Arrays.toString(shader.getUniforms()));
 		System.out.println(shader.getFragmentShaderSource());

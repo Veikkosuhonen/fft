@@ -1,4 +1,4 @@
-package com.github.veikkosuhonen.fftapp.fft;
+package com.github.veikkosuhonen.fftapp.fft.utils;
 
 import java.util.Objects;
 

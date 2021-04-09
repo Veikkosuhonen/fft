@@ -1,4 +1,7 @@
-import com.github.veikkosuhonen.fftapp.fft.*;
+import com.github.veikkosuhonen.fftapp.fft.dft.DFT;
+import com.github.veikkosuhonen.fftapp.fft.dft.FFT;
+import com.github.veikkosuhonen.fftapp.fft.dft.InPlaceFFT;
+import com.github.veikkosuhonen.fftapp.fft.dft.ReferenceFFT;
 import utils.Signal;
 
 /**
@@ -6,7 +9,7 @@ import utils.Signal;
  */
 public class BenchmarkSuite {
     public static void main(String[] args) {
-        int samples = 2 << 8;
+        int samples = 2 << 10;
         int trials = 200;
         int warmup = 100;
         //long naiveDFTTime = benchmark(new NaiveDFT(), samples, trials, warmup);

@@ -1,6 +1,6 @@
 package utils;
 
-import com.github.veikkosuhonen.fftapp.fft.DFT;
+import com.github.veikkosuhonen.fftapp.fft.dft.DFT;
 
 /**
  * Provides methods to benchmark different DFT implementations

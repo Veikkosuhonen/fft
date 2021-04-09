@@ -1,4 +1,4 @@
-import com.github.veikkosuhonen.fftapp.fft.Complex;
+import com.github.veikkosuhonen.fftapp.fft.utils.Complex;
 import org.junit.Assert;
 import org.junit.Test;
 

@@ -1,10 +1,7 @@
-import com.github.veikkosuhonen.fftapp.fft.*;
+import com.github.veikkosuhonen.fftapp.fft.dft.*;
 import org.junit.Assert;
 import org.junit.Test;
-import com.github.veikkosuhonen.fftapp.fft.ReferenceFFT;
 import utils.Signal;
-
-import java.util.Arrays;
 
 public class FFTTest {
 

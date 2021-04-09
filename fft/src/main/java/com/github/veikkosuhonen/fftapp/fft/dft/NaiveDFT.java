@@ -1,4 +1,6 @@
-package com.github.veikkosuhonen.fftapp.fft;
+package com.github.veikkosuhonen.fftapp.fft.dft;
+
+import com.github.veikkosuhonen.fftapp.fft.utils.Complex;
 
 /**
  * A naive implementation of the {@link DFT} with O(n^2) runtime
