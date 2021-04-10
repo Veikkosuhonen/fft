@@ -26,4 +26,6 @@ The implementation is in the `core` module.
 
 `gradle test` to run tests in the `fft` module. To read the Jacoco test report, open `fft/build/jacocoHtml/index.html`.
 
+`gradle benchmark` to run benchmark suite and display results (very WIP)
+
 `gradle check` to run checkstyle.
