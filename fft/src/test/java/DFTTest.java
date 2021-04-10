@@ -3,7 +3,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import utils.Signal;
 
-public class FFTTest {
+public class DFTTest {
 
     double MAX_ERROR = 0.001;
 
@@ -12,7 +12,8 @@ public class FFTTest {
         DFT dft = new NaiveDFT();
         DFT fft = new ReferenceFFT();
 
-        double[][] signal = Signal.generateSine(128, 4.0, Math.PI);
+        int n = 128;
+        double[][] signal = new double[][] {Signal.generateSine(n, 4.0, Math.PI), new double[n]};
 
         double[][] Fx = dft.process(signal);
         double[][] rFx = fft.process(signal);
@@ -25,7 +26,9 @@ public class FFTTest {
     public void testNaiveDFTCorrectness() {
         DFT dft = new NaiveDFT();
 
-        double[][] signal = Signal.generateSineComposite(128, new double[]{3, 10, 28});
+        int n = 128;
+        double[][] signal = new double[][] {Signal.generateSineComposite(n, new double[]{3, 10, 28}), new double[n]};
+
         double[][] fx = dft.process(signal);
 
         Assert.assertEquals("Calculates freq 3", 0.5, fx[0][3], MAX_ERROR);
@@ -38,7 +41,8 @@ public class FFTTest {
         DFT fft = new FFT();
         DFT rfft = new ReferenceFFT();
 
-        double[][] signal = Signal.generateSineComposite(128, new double[]{1.0, 10.0, 100.0});
+        int n = 128;
+        double[][] signal = new double[][] {Signal.generateSineComposite(n, new double[]{3, 10, 28}), new double[n]};
 
         double[][] Fx = fft.process(signal);
         double[][] rFx = rfft.process(signal);
@@ -51,7 +55,9 @@ public class FFTTest {
     public void testFFTCorrectness() {
         DFT dft = new FFT();
 
-        double[][] signal = Signal.generateSineComposite(128, new double[]{3, 10, 28});
+        int n = 128;
+        double[][] signal = new double[][] {Signal.generateSineComposite(n, new double[]{3, 10, 28}), new double[n]};
+
         double[][] fx = dft.process(signal);
 
         Assert.assertEquals("Calculates freq 3", 0.5, fx[0][3], MAX_ERROR);
@@ -64,7 +70,8 @@ public class FFTTest {
         DFT fft = new InPlaceFFT();
         DFT rfft = new ReferenceFFT();
 
-        double[][] signal = Signal.generateSineComposite(128, new double[]{1.0, 10.0, 100.0});
+        int n = 128;
+        double[][] signal = new double[][] {Signal.generateSineComposite(n, new double[]{3, 10, 28}), new double[n]};
 
         double[][] Fx = fft.process(signal);
         double[][] rFx = rfft.process(signal);
@@ -77,7 +84,9 @@ public class FFTTest {
     public void testInPlaceFFTCorrectness() {
         DFT dft = new InPlaceFFT();
 
-        double[][] signal = Signal.generateSineComposite(32, new double[]{3, 10, 28});
+        int n = 128;
+        double[][] signal = new double[][] {Signal.generateSineComposite(n, new double[]{3, 10, 28}), new double[n]};
+
         double[][] fx = dft.process(signal);
 
         Assert.assertEquals("Calculates freq 3", 0.5, fx[0][3], MAX_ERROR);

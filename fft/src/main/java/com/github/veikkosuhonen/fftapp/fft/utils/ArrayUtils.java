@@ -15,6 +15,14 @@ public class ArrayUtils {
         return farr;
     }
 
+    public static double[] toDoubleArray(int[] arr) {
+        double[] farr = new double[arr.length];
+        for (int i = 0; i < arr.length; i++) {
+            farr[i] = arr[i];
+        }
+        return farr;
+    }
+
     /**
      * Creates a new array from a subsection of the original
      * @param arr The original array

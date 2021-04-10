@@ -9,7 +9,7 @@ I've also added a [Complex](https://github.com/Veikkosuhonen/fft/blob/main/fft/s
 for making complex number math easier. 
 
 Basic unit-tests are in place for the DFT-classes and the Complex-class. 
-For the [DFT-tests](https://github.com/Veikkosuhonen/fft/blob/main/fft/src/test/java/FFTTest.java) (all in one test class currently), I am testing the correctness of the algorithms
+For the [DFT-tests](https://github.com/Veikkosuhonen/fft/blob/main/fft/src/test/java/DFTTest.java) (all in one test class currently), I am testing the correctness of the algorithms
 by checking if they can calculate the frequency amplitudes of a generated test signal. I also compare their outputs to a FFT-algorithm provided by the Apache Commons Math library. 
 I am aware that it's not really a valid method to test correctness of an algorithm by seeing if it matches a similar algorithm made by someone else, but it is quite helpful at this
 point of development. The reference implementation is also a good baseline comparison for performance. Some early testing hints that my simple FFT implementation
