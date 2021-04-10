@@ -6,15 +6,11 @@ import com.github.veikkosuhonen.fftapp.fft.dft.InPlaceFFT;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.concurrent.ArrayBlockingQueue;
 
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.DataLine;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.SourceDataLine;
-import javax.sound.sampled.UnsupportedAudioFileException;
+import javax.sound.sampled.*;
 
 /**
  * SoundPlayer
@@ -82,7 +78,9 @@ public class SoundPlayer {
             DataLine.Info info = new DataLine.Info(SourceDataLine.class, stream.getFormat());
             final SourceDataLine sourceLine = (SourceDataLine) AudioSystem.getLine(info);
             sourceLine.open();
-
+            //System.out.println(Arrays.toString(sourceLine.getControls()));
+            FloatControl gain = (FloatControl) sourceLine.getControl(FloatControl.Type.MASTER_GAIN);
+            gain.setValue(-10);
             sourceThread = new Thread() {
                 @Override
                 public void run() {

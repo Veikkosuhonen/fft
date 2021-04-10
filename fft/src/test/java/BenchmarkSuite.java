@@ -34,7 +34,7 @@ public class BenchmarkSuite {
                         .addSeries(fftTime, sampleSizes, "FFT")
                         .addSeries(inPlaceFFTime, sampleSizes, "In-place FFT")
                         .addSeries(referenceFFTTime, sampleSizes, "Reference FFT")
-                        .build("Average runtimes", "n samples", "runtime (ms)"))
+                        .build("Average run times", "n samples", "runtime (ms)"))
                 .show();
     }
 

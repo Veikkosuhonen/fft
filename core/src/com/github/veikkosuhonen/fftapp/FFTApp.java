@@ -35,8 +35,8 @@ public class FFTApp extends ApplicationAdapter {
 
 		shader = new ShaderProgram(Gdx.files.internal("test.vert"), Gdx.files.internal("test.frag"));
 		shader.bind();
-		System.out.println(Arrays.toString(shader.getUniforms()));
-		System.out.println(shader.getFragmentShaderSource());
+		//System.out.println(Arrays.toString(shader.getUniforms()));
+		//System.out.println(shader.getFragmentShaderSource());
 		mesh = new Mesh(true, 4, 6, VertexAttribute.Position());
 		mesh.setVertices(new float[]
 				{-1f, -1f, 0f,
@@ -45,7 +45,7 @@ public class FFTApp extends ApplicationAdapter {
 				-1f, 1f, 0f});
 		mesh.setIndices(new short[] {0, 1, 2, 2, 3, 0});
 
-		player = new SoundPlayer("C:\\Users\\Veikko\\IdeaProjects\\sound\\Crystallized.wav", CHUNK_SIZE, BUFFER_SIZE, 60);
+		player = new SoundPlayer(Gdx.files.internal("Crystallized.wav").path(), CHUNK_SIZE, BUFFER_SIZE, 60);
 		player.start();
 
 		startTime = System.currentTimeMillis();
