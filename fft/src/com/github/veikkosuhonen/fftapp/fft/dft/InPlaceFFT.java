@@ -2,7 +2,7 @@ package com.github.veikkosuhonen.fftapp.fft.dft;
 
 import com.github.veikkosuhonen.fftapp.fft.utils.Complex;
 
-public class InPlaceFFT implements DFT {
+public class InPlaceFFT implements com.github.veikkosuhonen.fftapp.fft.dft.DFT {
 
     private int[] bitReversalPermutation;
 

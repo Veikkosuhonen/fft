@@ -2,7 +2,6 @@ import com.github.veikkosuhonen.fftapp.fft.dft.DFT;
 import com.github.veikkosuhonen.fftapp.fft.dft.FFT;
 import com.github.veikkosuhonen.fftapp.fft.dft.InPlaceFFT;
 import com.github.veikkosuhonen.fftapp.fft.dft.ReferenceFFT;
-import com.github.veikkosuhonen.fftapp.fft.utils.ArrayUtils;
 import utils.ChartBuilder;
 import utils.PlotBuilder;
 import utils.Signal;

@@ -1,2 +1,3 @@
 include 'desktop', 'core', 'fft'
+include 'main'
 

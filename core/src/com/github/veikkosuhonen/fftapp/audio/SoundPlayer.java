@@ -1,12 +1,12 @@
 package com.github.veikkosuhonen.fftapp.audio;
 
 import com.github.veikkosuhonen.fftapp.fft.dct.DCT;
+import com.github.veikkosuhonen.fftapp.fft.dct.FastDCT;
 import com.github.veikkosuhonen.fftapp.fft.dct.RealOnlyDFT;
 import com.github.veikkosuhonen.fftapp.fft.dft.InPlaceFFT;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.concurrent.ArrayBlockingQueue;
 
@@ -28,7 +28,7 @@ public class SoundPlayer {
     DCT dct;
 
     public SoundPlayer(String filePath, int chunkSize, int bufferSize, int fps) {
-        dct = new RealOnlyDFT(new InPlaceFFT());
+        dct = new FastDCT();
         file = new File(filePath);
         queue = new ArrayBlockingQueue<>(queue_length);
         this.chunkSize = chunkSize;

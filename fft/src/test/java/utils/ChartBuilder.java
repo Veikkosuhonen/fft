@@ -28,6 +28,15 @@ public class ChartBuilder {
         return this;
     }
 
+    public ChartBuilder addSeries(double[] y, String name) {
+        XYSeries series = new XYSeries(name);
+        for (int i = 0; i < y.length; i++) {
+            series.add(i, y[i]);
+        }
+        dataset.addSeries(series);
+        return this;
+    }
+
     public ChartPanel build(String name, String xAxis, String yAxis) {
         JFreeChart chart = ChartFactory.createXYLineChart(name, xAxis, yAxis, dataset);
         chart.getXYPlot().setBackgroundPaint(Color.BLACK);

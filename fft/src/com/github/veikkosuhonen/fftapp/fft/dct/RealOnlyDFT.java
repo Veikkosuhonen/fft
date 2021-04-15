@@ -1,6 +1,5 @@
 package com.github.veikkosuhonen.fftapp.fft.dct;
 
-import com.github.veikkosuhonen.fftapp.fft.dct.DCT;
 import com.github.veikkosuhonen.fftapp.fft.dft.DFT;
 
 /**

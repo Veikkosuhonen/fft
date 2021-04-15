@@ -8,8 +8,6 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.github.veikkosuhonen.fftapp.audio.SoundPlayer;
 import com.github.veikkosuhonen.fftapp.fft.utils.ArrayUtils;
 
-import java.util.Arrays;
-
 import static com.badlogic.gdx.Gdx.*;
 
 public class FFTApp extends ApplicationAdapter {
