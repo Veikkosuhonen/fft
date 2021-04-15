@@ -1,4 +1,4 @@
-#version 330 core
+//#version 120 core
 
 const int BUFFER_SIZE = 256;
 
@@ -7,14 +7,14 @@ uniform vec2 u_resolution;
 uniform float u_freq[BUFFER_SIZE * 2];
 
 float getLFrequency(float x) {
-    if (x >= 1.0 || x <= 0) return 0.0;
-    int index = int(x * BUFFER_SIZE);
+    if (x >= 1.0 || x <= 0.0) return 0.0;
+    int index = int(x * float(BUFFER_SIZE));
     return abs( u_freq[index] ) / 10.0;
 }
 
 float getRFrequency(float x) {
-    if (x >= 1.0 || x <= 0) return 0.0;
-    int index = int(x * BUFFER_SIZE + BUFFER_SIZE);
+    if (x >= 1.0 || x <= 0.0) return 0.0;
+    int index = int(x * float(BUFFER_SIZE) + float(BUFFER_SIZE));
     return abs( u_freq[index] ) / 10.0;
 }
 

@@ -1,4 +1,4 @@
-#version 330 core
+//#version 120 core
 
 attribute vec4 a_position;
 
