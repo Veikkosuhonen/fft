@@ -7,5 +7,10 @@ import com.github.veikkosuhonen.fftapp.fft.dft.DFT;
  * (<a href=https://en.wikipedia.org/wiki/Discrete_cosine_transform>Wikipedia</a>). It achieves the same result as a {@link DFT} but for a real-only signal.
  */
 public interface DCT {
-    double[] process(double[] signal);
+    /**
+     * @param signal The signal for which to calculate the DCT. The length of the array must be a power of two,
+     *               else an <code>IllegalArgumentException is thrown</code>
+     * @return The calculated DCT values.
+     */
+    double[] process(double[] signal) throws IllegalArgumentException;
 }

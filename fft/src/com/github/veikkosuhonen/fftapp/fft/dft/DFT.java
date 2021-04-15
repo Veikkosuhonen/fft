@@ -9,20 +9,20 @@ public interface DFT {
     /**
      * @param dataRI Signal for which to calculate the DFT.
      *               Must consist of two arrays of equal length, the first representing real values
-     *               and the second representing imaginary values.
+     *               and the second representing imaginary values. The length of the arrays must be a power of two.
      * @return The DFT of the signal. Consists of two equal length arrays, the first representing real values
      * and the second representing imaginary values.
      */
-    public double[][] process(double[][] dataRI);
+    public double[][] process(double[][] dataRI) throws IllegalArgumentException;
 
 
     /**
      * @param dataRI Signal for which to calculate the DFT.
      *               Must consist of two arrays of equal length, the first representing real values
-     *               and the second representing imaginary values.
+     *               and the second representing imaginary values. The length of the arrays must be a power of two.
      * @param normalize Whether to normalize the data
      * @return The DFT of the signal. Array of two double arrays, the first representing real values
      * and the second representing imaginary values.
      */
-    public double[][] process(double[][] dataRI, boolean normalize);
+    public double[][] process(double[][] dataRI, boolean normalize) throws IllegalArgumentException;
 }

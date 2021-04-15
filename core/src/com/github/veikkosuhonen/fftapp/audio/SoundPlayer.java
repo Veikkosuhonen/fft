@@ -2,6 +2,7 @@ package com.github.veikkosuhonen.fftapp.audio;
 
 import com.github.veikkosuhonen.fftapp.fft.dct.DCT;
 import com.github.veikkosuhonen.fftapp.fft.dct.FastDCT;
+import com.github.veikkosuhonen.fftapp.fft.dct.NaiveDCT;
 import com.github.veikkosuhonen.fftapp.fft.dct.RealOnlyDFT;
 import com.github.veikkosuhonen.fftapp.fft.dft.InPlaceFFT;
 
@@ -17,44 +18,39 @@ import javax.sound.sampled.*;
  * SoundPlayer
  */
 public class SoundPlayer {
-    private File file;
+    private File audioFile;
     private Thread sourceThread;
     ArrayBlockingQueue<double[]> queue;
     int chunkSize;
     int bufferSize;
     byte[] audioBytes;
-    int queue_length = 256;
-    int window = 64;
+    int queue_length;
+    int window;
     int pollRate;
     DCT dct;
 
-    public SoundPlayer(String filePath, int chunkSize, int bufferSize, int fps) {
-        dct = new FastDCT();
-        file = new File(filePath);
-        queue = new ArrayBlockingQueue<>(queue_length);
+    public SoundPlayer(File audioFile, int chunkSize, int bufferSize, int queue_length, int window, int fps) {
+
+        this.audioFile = audioFile;
+        this.queue = new ArrayBlockingQueue<>(queue_length);
         this.chunkSize = chunkSize;
         this.bufferSize = bufferSize;
-        pollRate = (int)( 44100.0 / (fps * chunkSize / 2) );
+        this.window = window;
+
+        this.dct = new FastDCT();
+        this.pollRate = (int)( 44100.0 / (fps * chunkSize / 2) );
     }
 
-    public double[] getDFT() {
-        double[] inReal = new double[window * chunkSize];
-
-        Iterator<double[]> iter = queue.iterator();
-        int i = 0;
-        while (iter.hasNext() && i < window) {
-            System.arraycopy(iter.next(), 0, inReal, i * chunkSize, chunkSize);
-            i++;
-        }
-
-        for (int j = 0; j < pollRate; j++) queue.poll();
-        return dct.process(inReal);
-    }
-
-    public double[][] getLeftRightDFT() {
+    /**
+     * Calculates the DCT for the audio data in the queue over the window specified for the {@code SoundPlayer}
+     * @return an array of two double arrays for the left and right channel DCT values
+     */
+    public double[][] getLeftRightDCT() {
         double[] inLeft = new double[window * chunkSize / 2];
         double[] inRight = new double[window * chunkSize / 2];
 
+        // Iterate over the first (window) chunks in the queue.
+        // In stereo format, even members belong to the left channel and uneven to the right channel.
         Iterator<double[]> iter = queue.iterator();
         int i = 0;
         while (iter.hasNext() && i < window) {
@@ -66,6 +62,8 @@ public class SoundPlayer {
             i++;
         }
 
+        // Remove (pollRate) chunks from the queue.
+        // pollRate should be approximately the rate (per render frame) at which the audio thread adds chunks to the queue.
         for (int j = 0; j < pollRate; j++) queue.poll();
 
         return new double[][] {
@@ -73,9 +71,14 @@ public class SoundPlayer {
                 dct.process(inRight)};
     }
 
+    /**
+     * Creates the audio context and starts an audio thread, which reads bytes from the audio file,
+     * adds data chunks to the queue to be processed by a DCT algorithm and writes the bytes to a source line to be played
+     * by the audio system.
+     */
     public void start() {
         try {
-            final AudioInputStream stream = AudioSystem.getAudioInputStream(file);
+            final AudioInputStream stream = AudioSystem.getAudioInputStream(audioFile);
             DataLine.Info info = new DataLine.Info(SourceDataLine.class, stream.getFormat());
             final SourceDataLine sourceLine = (SourceDataLine) AudioSystem.getLine(info);
             sourceLine.open();
@@ -114,10 +117,19 @@ public class SoundPlayer {
 
         } catch (LineUnavailableException | UnsupportedAudioFileException | IOException lue) {lue.printStackTrace();}
     }
+
+    /**
+     * Interrupts the audio thread
+     */
     public void stop() {
         sourceThread.interrupt();
     }
 
+    /**
+     * Attempts to lower the volume of the given {@code SourceDataLine} if controls are supported. Without this
+     * the playback is quite loud.
+     * @param line
+     */
     private void setMasterGain(SourceDataLine line) {
         if (line.isControlSupported(FloatControl.Type.MASTER_GAIN)) {
             FloatControl gain = (FloatControl) line.getControl(FloatControl.Type.MASTER_GAIN);

@@ -9,17 +9,18 @@ uniform float u_freq[BUFFER_SIZE * 2];
 float getLFrequency(float x) {
     if (x >= 1.0 || x <= 0.0) return 0.0;
     int index = int(x * float(BUFFER_SIZE));
-    return abs( u_freq[index] ) / 10.0;
+    float amp = abs( u_freq[index] );
+    return log(amp + 1.0) / 3.0;
 }
 
 float getRFrequency(float x) {
     if (x >= 1.0 || x <= 0.0) return 0.0;
     int index = int(x * float(BUFFER_SIZE) + float(BUFFER_SIZE));
-    return abs( u_freq[index] ) / 10.0;
+    float amp = abs( u_freq[index] );
+    return log(amp + 1.0) / 3.0;
 }
 
-void main()
-{
+void main() {
     //vec2 u_resolution = vec2(100., 100.);
     vec2 fragPos = gl_FragCoord.st/u_resolution;
     fragPos *= 2.0;

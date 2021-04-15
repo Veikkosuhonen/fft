@@ -17,6 +17,8 @@ public class FFT implements DFT {
 
     @Override
     public double[][] process(double[][] dataRI, boolean normalize) {
+        validateInput(dataRI);
+        int n = dataRI[0].length;
         // Make a copy of the original array, we don't want to modify it
         double[][] dataRICopy = new double[2][dataRI[0].length];
         System.arraycopy(dataRI[0], 0, dataRICopy[0], 0, dataRI[0].length);
@@ -63,6 +65,17 @@ public class FFT implements DFT {
             dataRI[0][i + n/2] = q.real;
             dataRI[1][i + n/2] = q.img;
             w = w.times(wn);
+        }
+    }
+
+    private void validateInput(double[][] a) {
+        int n = a[0].length;
+        if ((n & (n - 1)) != 0) {
+            throw new IllegalArgumentException("Length of the real and imaginary signals must be a power of two (was " + n + ")");
+        } else if (n != a[1].length) {
+            throw new IllegalArgumentException("Length of the real and imaginary signal must match (" + n + " != " + a[1].length + ")");
+        } else if (a.length != 2) {
+            throw new IllegalArgumentException("Input signal should contain two arrays (got " + a.length + ")");
         }
     }
 }
