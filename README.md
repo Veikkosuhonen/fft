@@ -29,3 +29,7 @@ The implementation is in the `core` module.
 `gradle benchmark` to run benchmark suite and display results (very WIP)
 
 `gradle check` to run checkstyle.
+
+## Troubleshooting
+
+If you get an error `Inconsistency detected by ld.so:...` when running the application on Linux, please make sure you are using JDK 8. You can explicitly specify it by adding the option `-Dorg.gradle.java.home=<path-to-jdk8>`. Currently audio may not work on Linux.
