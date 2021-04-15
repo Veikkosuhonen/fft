@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.concurrent.ArrayBlockingQueue;
+import java.util.logging.Logger;
 
 import javax.sound.sampled.*;
 
@@ -79,8 +80,8 @@ public class SoundPlayer {
             final SourceDataLine sourceLine = (SourceDataLine) AudioSystem.getLine(info);
             sourceLine.open();
             //System.out.println(Arrays.toString(sourceLine.getControls()));
-            FloatControl gain = (FloatControl) sourceLine.getControl(FloatControl.Type.MASTER_GAIN);
-            gain.setValue(-10);
+            setMasterGain(sourceLine);
+
             sourceThread = new Thread() {
                 @Override
                 public void run() {
@@ -115,5 +116,17 @@ public class SoundPlayer {
     }
     public void stop() {
         sourceThread.interrupt();
+    }
+
+    private void setMasterGain(SourceDataLine line) {
+        if (line.isControlSupported(FloatControl.Type.MASTER_GAIN)) {
+            FloatControl gain = (FloatControl) line.getControl(FloatControl.Type.MASTER_GAIN);
+            gain.setValue(-10);
+        } else if (line.isControlSupported(FloatControl.Type.VOLUME)) {
+            FloatControl volume = (FloatControl) line.getControl(FloatControl.Type.VOLUME);
+            volume.setValue(0.5f);
+        } else {
+            Logger.getAnonymousLogger().warning("Cannot control volume, audio may be loud.");
+        }
     }
 }
