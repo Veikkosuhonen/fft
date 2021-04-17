@@ -12,6 +12,8 @@ The implementation is in the `core` module.
 
 [Design document](https://github.com/Veikkosuhonen/fft/blob/main/docs/design_document.md)
 
+[Implementation](https://github.com/Veikkosuhonen/fft/blob/main/docs/implementation.md)
+
 ### Weekly reports
 
 [week 1](https://github.com/Veikkosuhonen/fft/blob/main/docs/week1.md)
