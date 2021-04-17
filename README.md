@@ -22,7 +22,7 @@ The implementation is in the `core` module.
 
 ## Gradle
 
-`gradle run` to launch the desktop application. (At the moment it is hardcoded to play `core/assets/Crystallized.wav`, which is included in the repo.)
+`gradle run` to launch the desktop application. (Set `AUDIO_FILE` to point to a wav file if you want to skip the file-choosing dialog).
 
 `gradle test` to run tests in the `fft` module. To read the Jacoco test report, open `fft/build/jacocoHtml/index.html`.
 
