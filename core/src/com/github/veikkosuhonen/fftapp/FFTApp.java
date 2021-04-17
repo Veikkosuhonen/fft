@@ -17,16 +17,15 @@ import static com.badlogic.gdx.Gdx.*;
 
 public class FFTApp extends ApplicationAdapter {
 
-	final int BUFFER_SIZE = 512;
-	final int CHUNK_SIZE = 64;
-	final int QUEUE_LENGTH = 768;
+	final int CHUNK_SIZE = 128;
+	final int QUEUE_LENGTH = 360;
 	final int FPS = 60;
 	final int WINDOW = 64;
 
 	SoundPlayer player;
 	File audioFile;
 
-	final int renderDataLength = 256;
+	final int SPECTRUM_LENGTH = 400;
 
 	ShaderProgram shader;
 	Mesh mesh;
@@ -46,7 +45,6 @@ public class FFTApp extends ApplicationAdapter {
 		player = new SoundPlayer(
 				audioFile,
 				CHUNK_SIZE,
-				BUFFER_SIZE,
 				QUEUE_LENGTH,
 				WINDOW,
 				FPS);
@@ -72,7 +70,7 @@ public class FFTApp extends ApplicationAdapter {
 
 		shader.bind();
 		shader.setUniformf("u_time", (time - startTime) * 1f / 1000);
-		shader.setUniform1fv("u_freq", dataLR, 0, renderDataLength * 2);
+		shader.setUniform1fv("u_freq", dataLR, 0, SPECTRUM_LENGTH * 2);
 		shader.setUniformf("u_resolution", graphics.getWidth(), graphics.getHeight());
 		mesh.render(shader, GL20.GL_TRIANGLES);
 	}
@@ -88,11 +86,16 @@ public class FFTApp extends ApplicationAdapter {
 	 * @return
 	 */
 	private float[] processFrequencyData(double[] data) {
-		if (data.length < renderDataLength) {
-			throw new IllegalArgumentException("renderDataLength should be less than the DCT data (" + data.length + " < " + renderDataLength + ")");
+		if (data.length < SPECTRUM_LENGTH) {
+			throw new IllegalArgumentException("DCT data should not be less than SPECTRUM_LENGTH (" + data.length + " < " + SPECTRUM_LENGTH + ")");
 		}
-		float[] result = ArrayUtils.toFloatArray(ArrayUtils.slice(data, renderDataLength));
+		float[] result = ArrayUtils.abs(ArrayUtils.toFloatArray(ArrayUtils.slice(data, SPECTRUM_LENGTH)));
+		//float mean = ArrayUtils.select(result, 0, SPECTRUM_LENGTH - 1, SPECTRUM_LENGTH / 2);
 
+		//Smooth
+		for (int i = 1; i < SPECTRUM_LENGTH - 1; i++) {
+			result[i] = (result[i - 1] + 2 * result[i] + result[i + 1]) / 4;
+		}
 		return result;
 	}
 

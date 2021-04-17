@@ -5,7 +5,7 @@ precision highp float;
 
 #define BEATMOVE 1
 
-const int BUFFER_SIZE = 256;
+const int BUFFER_SIZE = 400;
 const float FREQ_RANGE = BUFFER_SIZE;
 const float PI = 3.1415;
 const float RADIUS = 0.5;

@@ -82,6 +82,15 @@ public class ArrayUtils {
         return newArr;
     }
 
+    public static float[] abs(float[] arr) {
+        float[] newArr = new float[arr.length];
+        System.arraycopy(arr, 0, newArr, 0, arr.length);
+        for (int i = 0; i < arr.length; i++) {
+            newArr[i] = arr[i] < 0 ? -arr[i] : arr[i];
+        }
+        return newArr;
+    }
+
     /**
      * Select the k:th element of the array in specified range using <a href=https://en.wikipedia.org/wiki/Quickselect>quickselect</a>
      * <p>For example, to calculate the median use {@code select(arr, 0, arr.length - 1, arr.length / 2)}</p>

@@ -29,12 +29,15 @@ public class SoundPlayer {
     int pollRate;
     DCT dct;
 
-    public SoundPlayer(File audioFile, int chunkSize, int bufferSize, int queue_length, int window, int fps) {
+    public SoundPlayer(File audioFile, int chunkSize, int queue_length, int window, int fps) {
+        int n = chunkSize * window;
+        if ((n & (n - 1)) != 0) {
+            throw new IllegalArgumentException("chunkSize * window must be a power of two (was " + n + ")");
+        }
 
         this.audioFile = audioFile;
         this.queue = new ArrayBlockingQueue<>(queue_length);
         this.chunkSize = chunkSize;
-        this.bufferSize = bufferSize;
         this.window = window;
 
         this.dct = new FastDCT();
@@ -89,7 +92,7 @@ public class SoundPlayer {
                 @Override
                 public void run() {
                     int bytesPerFrame = stream.getFormat().getFrameSize();
-                    int numBytes = bufferSize * bytesPerFrame;
+                    int numBytes = 1024 * bytesPerFrame;
                     audioBytes = new byte[numBytes];
                     int bytesRead;
                     try {
