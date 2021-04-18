@@ -138,9 +138,10 @@ public class FFTApp extends ApplicationAdapter {
 	 */
 	private void chooseDefaultFile() {
 		String path = System.getenv("AUDIO_FILE");
-		if (path != null) {
-			audioFile = new File(path);
+		if (path == null) {
+			return;
 		}
+		audioFile = new File(path);
 		if (!audioFile.exists()) {
 			audioFile = null;
 		}
