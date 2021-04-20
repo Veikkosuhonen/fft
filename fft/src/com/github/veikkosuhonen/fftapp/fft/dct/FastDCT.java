@@ -5,7 +5,7 @@ public class FastDCT extends DCT {
     @Override
     public double[] process(double[] signal) {
         int n = signal.length;
-        validateInput(n);
+        super.validateInput(n);
 
         double[] signalCopy = new double[n];
         System.arraycopy(signal, 0, signalCopy,0, n);
@@ -38,11 +38,5 @@ public class FastDCT extends DCT {
 
         data[off + len - 2] = temp[off + halfLen - 1];
         data[off + len - 1] = temp[off + len - 1];
-    }
-
-    private void validateInput(int n) {
-        if ((n & (n - 1)) != 0) {
-            throw new IllegalArgumentException("Length of the real and imaginary signals must be a power of two (was " + n + ")");
-        }
     }
 }

@@ -19,15 +19,9 @@ public class RealOnlyDFT extends DCT {
     @Override
     public double[] process(double[] signal) {
         int n = signal.length;
-        validateInput(n);
+        super.validateInput(n);
         double[][] signalRI = new double[][] {signal, new double[n]};
         double[][] resultRI = dft.process(signalRI);
         return resultRI[0];
-    }
-
-    private void validateInput(int n) {
-        if ((n & (n - 1)) != 0) {
-            throw new IllegalArgumentException("Length of the real and imaginary signals must be a power of two (was " + n + ")");
-        }
     }
 }

@@ -14,7 +14,7 @@ public class NaiveDCT extends DCT {
     @Override
     public double[] process(double[] signal) {
         int n = signal.length;
-        validateInput(n);
+        super.validateInput(n);
         double[] result = new double[n];
         double pi_over_n = Math.PI / n;
         for (int i = 0; i < n; i++) {
@@ -25,11 +25,5 @@ public class NaiveDCT extends DCT {
             result[i] = (sum + 0.5 * signal[0]) / n; //Scaled by n
         }
         return result;
-    }
-
-    private void validateInput(int n) {
-        if ((n & (n - 1)) != 0) {
-            throw new IllegalArgumentException("Length of the real and imaginary signals must be a power of two (was " + n + ")");
-        }
     }
 }

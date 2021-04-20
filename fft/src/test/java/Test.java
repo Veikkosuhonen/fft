@@ -8,6 +8,10 @@ import utils.Signal;
 
 public class Test {
     public static void main(String[] args) {
+        draw();
+    }
+
+    static void draw() {
         DCT dct = new FastDCT();
         DCT dct1 = new RealOnlyDFT(new ReferenceFFT());
         double[] signal = Signal.generateSineComposite(512, new double[] {1.0, 10.0, 100.0});

@@ -13,4 +13,10 @@ public abstract class DCT {
      * @return The calculated DCT values.
      */
     public abstract double[] process(double[] signal) throws IllegalArgumentException;
+
+    protected void validateInput(int n) {
+        if ((n & (n - 1)) != 0) {
+            throw new IllegalArgumentException("Length of the signal must be a power of two (was " + n + ")");
+        }
+    }
 }

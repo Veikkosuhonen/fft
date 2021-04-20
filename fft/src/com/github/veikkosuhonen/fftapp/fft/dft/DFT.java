@@ -26,7 +26,7 @@ public abstract class DFT {
      */
     public abstract double[][] process(double[][] dataRI, boolean normalize) throws IllegalArgumentException;
 
-    void validateInput(double[][] a) {
+    protected void validateInput(double[][] a) {
         int n = a[0].length;
         if ((n & (n - 1)) != 0) {
             throw new IllegalArgumentException("Length of the real and imaginary signals must be a power of two (was " + n + ")");

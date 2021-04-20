@@ -4,12 +4,9 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.github.veikkosuhonen.fftapp.audio.AudioFile;
 import com.github.veikkosuhonen.fftapp.audio.SoundPlayer;
 import com.github.veikkosuhonen.fftapp.fft.utils.ArrayUtils;
-
-import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
-import java.io.File;
 
 import static com.badlogic.gdx.Gdx.*;
 
@@ -44,7 +41,6 @@ public class FFTApp extends ApplicationAdapter {
 	final int SPECTRUM_LENGTH = 510;
 
 	SoundPlayer player;
-	File audioFile;
 
 	ShaderProgram shader;
 	Mesh mesh;
@@ -55,18 +51,16 @@ public class FFTApp extends ApplicationAdapter {
 	 */
 	@Override
 	public void create() {
-		chooseDefaultFile();
-		if (audioFile == null) {
-			chooseFile();
-		}
+
 		initializeGraphics();
 
 		player = new SoundPlayer(
-				audioFile,
+				AudioFile.get(),
 				CHUNK_SIZE,
 				QUEUE_LENGTH,
 				WINDOW,
 				FPS);
+
 		player.start();
 
 		startTime = System.currentTimeMillis();
@@ -112,9 +106,9 @@ public class FFTApp extends ApplicationAdapter {
 		//float mean = ArrayUtils.select(result, 0, SPECTRUM_LENGTH - 1, SPECTRUM_LENGTH / 2);
 
 		//Smooth
-		//for (int i = 1; i < SPECTRUM_LENGTH - 1; i++) {
-		//	result[i] = (result[i - 1] + 2 * result[i] + result[i + 1]) / 4;
-		//}
+		for (int i = 1; i < SPECTRUM_LENGTH - 1; i++) {
+			result[i] = (result[i - 1] + 2 * result[i] + result[i + 1]) / 4;
+		}
 		return result;
 	}
 
@@ -132,37 +126,5 @@ public class FFTApp extends ApplicationAdapter {
 					1f, 1f, 0f,
 					-1f, 1f, 0f});
 		mesh.setIndices(new short[] {0, 1, 2, 2, 3, 0});
-	}
-
-	/**
-	 * Shows a file chooser dialog until a WAV file is chosen
-	 */
-	private void chooseFile() {
-		JPanel panel = new JPanel();
-		JFileChooser fileChooser = new JFileChooser();
-		fileChooser.setApproveButtonText("Select");
-		fileChooser.setDialogTitle("Select a WAV audio file to be played");
-		FileNameExtensionFilter filter = new FileNameExtensionFilter("WAV files", "wav");
-		fileChooser.setFileFilter(filter);
-		while (true) {
-			if (fileChooser.showDialog(panel, "Select") == JFileChooser.APPROVE_OPTION) {
-				audioFile = fileChooser.getSelectedFile();
-				break;
-			}
-		}
-	}
-
-	/**
-	 * By setting the environment variable AUDIO_FILE to a file path, you can skip the file chooser dialog
-	 */
-	private void chooseDefaultFile() {
-		String path = System.getenv("AUDIO_FILE");
-		if (path == null) {
-			return;
-		}
-		audioFile = new File(path);
-		if (!audioFile.exists()) {
-			audioFile = null;
-		}
 	}
 }
