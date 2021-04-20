@@ -82,6 +82,11 @@ public class ArrayUtils {
         return newArr;
     }
 
+    /**
+     * Returns a new array with the absolute value of each element of the given array
+     * @param arr The original array
+     * @return The new array with absolute values
+     */
     public static float[] abs(float[] arr) {
         float[] newArr = new float[arr.length];
         System.arraycopy(arr, 0, newArr, 0, arr.length);

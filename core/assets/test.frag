@@ -1,6 +1,6 @@
 //#version 120 core
 
-const int BUFFER_SIZE = 400;
+const int BUFFER_SIZE = 510;
 
 uniform float u_time;
 uniform vec2 u_resolution;

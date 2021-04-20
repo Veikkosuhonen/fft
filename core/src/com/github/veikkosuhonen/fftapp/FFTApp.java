@@ -3,29 +3,48 @@ package com.github.veikkosuhonen.fftapp;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.*;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.github.veikkosuhonen.fftapp.audio.SoundPlayer;
 import com.github.veikkosuhonen.fftapp.fft.utils.ArrayUtils;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import java.awt.*;
 import java.io.File;
 
 import static com.badlogic.gdx.Gdx.*;
 
 public class FFTApp extends ApplicationAdapter {
 
+	/*
+	* Number of pcm-values in each chunk in the queue.
+	*/
 	final int CHUNK_SIZE = 128;
+
+	/*
+	* Max capacity of the queue in chunks. Determines latency of the visualization alongside CHUNK_SIZE.
+	*/
 	final int QUEUE_LENGTH = 360;
-	final int FPS = 60;
+
+	/*
+	* How many chunks in a window. There's a frequency and temporal resolution tradeoff: larger value allows higher
+	* resolution DCT to be calculated but is less responsive temporally and vice versa. Must be less than QUEUE_LENGTH,
+	* and WINDOW * CHUNK_SIZE must be a power of two.
+	*/
 	final int WINDOW = 64;
+
+	/*
+	* The desktop application is targeting 60 fps. Important for determining queue poll rate.
+	*/
+	final int FPS = 60;
+
+	/*
+	* Length of the frequency spectrum (per channel) rendered. Must be less than 511.
+	* Should match BUFFER_SIZE constant in fragment shader.
+	*/
+	final int SPECTRUM_LENGTH = 510;
 
 	SoundPlayer player;
 	File audioFile;
-
-	final int SPECTRUM_LENGTH = 400;
 
 	ShaderProgram shader;
 	Mesh mesh;
@@ -83,7 +102,7 @@ public class FFTApp extends ApplicationAdapter {
 
 	/**
 	 * @param data
-	 * @return
+	 * @return Preprocessed frequency spectrum ready to be sent to shader
 	 */
 	private float[] processFrequencyData(double[] data) {
 		if (data.length < SPECTRUM_LENGTH) {
@@ -93,9 +112,9 @@ public class FFTApp extends ApplicationAdapter {
 		//float mean = ArrayUtils.select(result, 0, SPECTRUM_LENGTH - 1, SPECTRUM_LENGTH / 2);
 
 		//Smooth
-		for (int i = 1; i < SPECTRUM_LENGTH - 1; i++) {
-			result[i] = (result[i - 1] + 2 * result[i] + result[i + 1]) / 4;
-		}
+		//for (int i = 1; i < SPECTRUM_LENGTH - 1; i++) {
+		//	result[i] = (result[i - 1] + 2 * result[i] + result[i + 1]) / 4;
+		//}
 		return result;
 	}
 
