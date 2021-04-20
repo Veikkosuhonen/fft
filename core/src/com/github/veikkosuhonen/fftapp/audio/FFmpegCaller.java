@@ -51,7 +51,7 @@ public class FFmpegCaller {
                 System.out.println(line);
             }
         } catch (IOException ioe) {
-            Logger.getAnonymousLogger().warning("Failed to print ffmpeg output");
+            Logger.getAnonymousLogger().warning("Failed to print ffmpeg output: " + ioe.getLocalizedMessage());
         }
     }
 }

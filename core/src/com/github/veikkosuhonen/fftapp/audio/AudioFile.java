@@ -71,7 +71,7 @@ public class AudioFile {
         if (audioFile.getName().endsWith(".mp3")) {
             Logger.getAnonymousLogger().info("Converting " + audioFile.getName());
             String mp3Path = audioFile.getAbsolutePath();
-            String wavPath = Paths.get("").toAbsolutePath().toString() + "\\" + TEMP_FILENAME;
+            String wavPath = Paths.get("").toAbsolutePath().toString() + File.separator + TEMP_FILENAME;
 
             if (FFmpegCaller.convertToWav(mp3Path, wavPath)) {
                 audioFile = new File(wavPath);
