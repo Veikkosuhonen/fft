@@ -5,10 +5,11 @@ import com.github.veikkosuhonen.fftapp.fft.utils.Complex;
 /**
  * A naive implementation of the {@link DFT} with O(n^2) runtime
  */
-public class NaiveDFT implements DFT {
+public class NaiveDFT extends DFT {
 
     @Override
     public double[][] process(double[][] dataRI, boolean normalize) {
+        super.validateInput(dataRI);
         int N = dataRI[0].length;
 
         double[] real = new double[N];

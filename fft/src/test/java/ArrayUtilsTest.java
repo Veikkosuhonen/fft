@@ -5,6 +5,40 @@ import org.junit.Test;
 public class ArrayUtilsTest {
 
     @Test
+    public void testSlice() {
+        float[] arr = new float[] {1, 2, 3, 4, 5, 6};
+        float[] arrSliced1 = new float[] {1, 2, 3};
+        float[] arrSliced2 = new float[] {3, 4, 5};
+
+        Assert.assertArrayEquals(arrSliced1, ArrayUtils.slice(arr, 3), 0.001f);
+        Assert.assertArrayEquals(arrSliced2, ArrayUtils.slice(arr, 2, 5), 0.001f);
+
+        boolean exceptionThrown = false;
+        try {
+            ArrayUtils.slice(arr, 5, 5);
+        } catch (IllegalArgumentException iae) {
+            exceptionThrown = true;
+        }
+        Assert.assertTrue("Exception thrown when indices equal", exceptionThrown);
+    }
+
+    @Test
+    public void testJoin() {
+        float[] arr = new float[] {1, 2, 3, 4, 5, 6};
+        float[] arr1 = new float[] {1, 2};
+        float[] arr2 = new float[] {3, 4, 5, 6};
+        Assert.assertArrayEquals(arr, ArrayUtils.join(arr1, arr2), 0.001f);
+    }
+
+    @Test
+    public void testAbs() {
+        float[] arr1 = new float[] {1, 2, 3, 4, 5, 6};
+        float[] arr2 = new float[] {1, -2, 3, -4, 5, -6};
+        Assert.assertArrayEquals(arr1, ArrayUtils.abs(arr2), 0.001f);
+    }
+
+
+    @Test
     public void testSelect() {
         float[] arr = new float[] {5, 3, 2, 4, 1};
         Assert.assertEquals(5, ArrayUtils.select(arr, 0, arr.length - 1, arr.length - 1), 0);

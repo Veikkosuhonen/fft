@@ -5,7 +5,7 @@ import com.github.veikkosuhonen.fftapp.fft.dft.DFT;
 /**
  * SimpleRealOnlyDFT calculates the DCT using a DFT-algorithm by adding a zero imaginary component to the real signal
  */
-public class RealOnlyDFT implements DCT {
+public class RealOnlyDFT extends DCT {
 
     private DFT dft;
 

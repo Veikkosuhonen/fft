@@ -2,7 +2,7 @@ package com.github.veikkosuhonen.fftapp.fft.dft;
 
 import com.github.veikkosuhonen.fftapp.fft.utils.Complex;
 
-public class InPlaceFFT implements com.github.veikkosuhonen.fftapp.fft.dft.DFT {
+public class InPlaceFFT extends DFT {
 
     private int[] bitReversalPermutation;
 
@@ -13,6 +13,7 @@ public class InPlaceFFT implements com.github.veikkosuhonen.fftapp.fft.dft.DFT {
 
     @Override
     public double[][] process(double[][] dataRI, boolean normalize) {
+        super.validateInput(dataRI);
         int n = dataRI[0].length;
 
         calculateBitReversalPermutation(n);

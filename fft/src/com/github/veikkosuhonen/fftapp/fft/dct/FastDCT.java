@@ -1,6 +1,6 @@
 package com.github.veikkosuhonen.fftapp.fft.dct;
 
-public class FastDCT implements DCT {
+public class FastDCT extends DCT {
 
     @Override
     public double[] process(double[] signal) {

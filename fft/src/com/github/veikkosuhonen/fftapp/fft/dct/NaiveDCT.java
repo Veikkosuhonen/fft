@@ -3,7 +3,7 @@ package com.github.veikkosuhonen.fftapp.fft.dct;
 /**
  * Implements the DCT-II algorithm
  */
-public class NaiveDCT implements DCT {
+public class NaiveDCT extends DCT {
 
     /**
      * Calculates the DCT according to the <a href=https://en.wikipedia.org/wiki/Discrete_cosine_transform#DCT-II>formula</a> (Wikipedia) in O(n^2) time.

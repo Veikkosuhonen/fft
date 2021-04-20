@@ -7,7 +7,7 @@ import org.apache.commons.math3.transform.TransformType;
 /**
  * Wraps the FastFourierTransform from Apache Commons math library for comparison purposes
  */
-public class ReferenceFFT implements DFT {
+public class ReferenceFFT extends DFT {
 
     @Override
     public double[][] process(double[][] dataRI) {
@@ -16,7 +16,7 @@ public class ReferenceFFT implements DFT {
 
     @Override
     public double[][] process(double[][] dataRI, boolean normalize) {
-        validateInput(dataRI);
+        super.validateInput(dataRI);
         int n = dataRI[0].length;
 
         // Make a copy of the original array, we don't want to modify it
@@ -31,16 +31,5 @@ public class ReferenceFFT implements DFT {
             }
         }
         return dataRICopy;
-    }
-
-    private void validateInput(double[][] a) {
-        int n = a[0].length;
-        if ((n & (n - 1)) != 0) {
-            throw new IllegalArgumentException("Length of the real and imaginary signals must be a power of two (was " + n + ")");
-        } else if (n != a[1].length) {
-            throw new IllegalArgumentException("Length of the real and imaginary signal must match (" + n + " != " + a[1].length + ")");
-        } else if (a.length != 2) {
-            throw new IllegalArgumentException("Input signal should contain two arrays (got " + a.length + ")");
-        }
     }
 }

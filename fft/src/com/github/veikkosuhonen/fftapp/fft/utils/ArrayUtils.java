@@ -26,7 +26,7 @@ public class ArrayUtils {
     /**
      * Creates a new array from a subsection of the original
      * @param arr The original array
-     * @param end The last index of the subsection
+     * @param end The index where the slice ends
      * @return The sliced array
      */
     public static float[] slice(float[] arr, int end) {
@@ -37,11 +37,12 @@ public class ArrayUtils {
      * Creates a new array from a subsection of the original
      * @param arr The original array
      * @param start The first index of the subsection
-     * @param end The last index of the subsection
+     * @param end The index where the slice ends
      * @return The sliced array
      */
     public static float[] slice(float[] arr, int start, int end) {
-        float[] newArr = new float[end];
+        if (end <= start) throw new IllegalArgumentException("End index of the slice must be greater than the start index");
+        float[] newArr = new float[end - start];
         System.arraycopy(arr, start, newArr, 0, end - start);
         return newArr;
     }
