@@ -5,8 +5,14 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.github.veikkosuhonen.fftapp.audio.AudioFile;
+import com.github.veikkosuhonen.fftapp.audio.DCTProcessor;
 import com.github.veikkosuhonen.fftapp.audio.SoundPlayer;
+import com.github.veikkosuhonen.fftapp.fft.dct.FastDCT;
 import com.github.veikkosuhonen.fftapp.fft.utils.ArrayUtils;
+import com.github.veikkosuhonen.fftapp.fft.windowing.Hann;
+
+import java.util.Queue;
+import java.util.concurrent.ArrayBlockingQueue;
 
 import static com.badlogic.gdx.Gdx.*;
 
@@ -41,6 +47,7 @@ public class FFTApp extends ApplicationAdapter {
 	final int SPECTRUM_LENGTH = 510;
 
 	SoundPlayer player;
+	DCTProcessor processor;
 
 	ShaderProgram shader;
 	Mesh mesh;
@@ -54,12 +61,22 @@ public class FFTApp extends ApplicationAdapter {
 
 		initializeGraphics();
 
+		processor = new DCTProcessor(
+				new FastDCT(),
+				CHUNK_SIZE,
+				WINDOW,
+				FPS,
+				new Hann(CHUNK_SIZE)
+		);
+
 		player = new SoundPlayer(
 				AudioFile.get(),
-				CHUNK_SIZE,
-				QUEUE_LENGTH,
-				WINDOW,
-				FPS);
+				CHUNK_SIZE
+		);
+
+		Queue<double[]> queue = new ArrayBlockingQueue<>(QUEUE_LENGTH);
+		player.setOutput(queue);
+		processor.setInput(queue);
 
 		player.start();
 
@@ -76,7 +93,7 @@ public class FFTApp extends ApplicationAdapter {
 		gl.glClearColor(0, 0, 0, 1);
 		gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		double[][] data = player.getLeftRightDCT();
+		double[][] data = processor.getLeftRightDCT();
 		float[] dataL = processFrequencyData(data[0]);
 		float[] dataR = processFrequencyData(data[1]);
 		float[] dataLR = ArrayUtils.join(dataL, dataR);
@@ -106,9 +123,9 @@ public class FFTApp extends ApplicationAdapter {
 		//float mean = ArrayUtils.select(result, 0, SPECTRUM_LENGTH - 1, SPECTRUM_LENGTH / 2);
 
 		//Smooth
-		for (int i = 1; i < SPECTRUM_LENGTH - 1; i++) {
-			result[i] = (result[i - 1] + 2 * result[i] + result[i + 1]) / 4;
-		}
+		//for (int i = 1; i < SPECTRUM_LENGTH - 1; i++) {
+		//	result[i] = (result[i - 1] + 2 * result[i] + result[i + 1]) / 4;
+		//}
 		return result;
 	}
 
