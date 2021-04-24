@@ -10,9 +10,13 @@ The implementation is in the `core` module.
 
 ## Docs
 
+[User guide](https://github.com/Veikkosuhonen/fft/blob/main/docs/user_guide.md)
+
 [Design document](https://github.com/Veikkosuhonen/fft/blob/main/docs/design_document.md)
 
 [Implementation](https://github.com/Veikkosuhonen/fft/blob/main/docs/implementation.md)
+
+[Testing](https://github.com/Veikkosuhonen/fft/blob/main/docs/testing.md)
 
 ### Weekly reports
 
