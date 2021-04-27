@@ -37,8 +37,17 @@ public class SoundPlayer {
      */
     public void start() {
         try {
-            final AudioInputStream stream = AudioSystem.getAudioInputStream(audioFile);
-            DataLine.Info info = new DataLine.Info(SourceDataLine.class, stream.getFormat());
+            AudioFormat format = new AudioFormat(44000.0f, 16, 1, true, true);
+            //final AudioInputStream stream = AudioSystem.getAudioInputStream(audioFile);
+            //
+            final TargetDataLine stream = AudioSystem.getTargetDataLine(format);
+
+            DataLine.Info info = new DataLine.Info(TargetDataLine.class, format);
+            //stream = (TargetDataLine) AudioSystem.getLine(info);
+            stream.open(format);
+            stream.start();
+
+            info = new DataLine.Info(SourceDataLine.class, stream.getFormat());
             final SourceDataLine sourceLine = (SourceDataLine) AudioSystem.getLine(info);
             sourceLine.open();
             //System.out.println(Arrays.toString(sourceLine.getControls()));
@@ -64,7 +73,7 @@ public class SoundPlayer {
                             }
                             sourceLine.write(audioBytes, 0, bytesRead);
                         }
-                    } catch (IOException ioe) {
+                    } catch (Exception ioe) {
                         ioe.printStackTrace();
                     }
                     sourceLine.stop();
@@ -74,7 +83,7 @@ public class SoundPlayer {
 
             sourceThread.start();
 
-        } catch (LineUnavailableException | UnsupportedAudioFileException | IOException lue) {lue.printStackTrace();}
+        } catch (LineUnavailableException /*| UnsupportedAudioFileException | IOException*/ lue) {lue.printStackTrace();}
     }
 
     public void setOutput(Queue<double[]> queue) {

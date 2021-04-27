@@ -45,7 +45,7 @@ public class FFTApp extends ApplicationAdapter {
 	* Length of the frequency spectrum (per channel) rendered. Must be less than 511.
 	* Should match BUFFER_SIZE constant in fragment shader.
 	*/
-	final int SPECTRUM_LENGTH = 256;
+	final int SPECTRUM_LENGTH = 512;
 
 	SoundPlayer player;
 	DCTProcessor processor;
@@ -154,7 +154,7 @@ public class FFTApp extends ApplicationAdapter {
 	Pixmap pixmap1;
 	Pixmap pixmap2;
 	Texture texture;
-	int w = 512;
+	int w = 256;
 	int h = SPECTRUM_LENGTH;
 
 	private void updatePixmap(float[] data) {
