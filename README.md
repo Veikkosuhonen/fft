@@ -26,6 +26,8 @@ The implementation is in the `core` module.
 
 [week 3](https://github.com/Veikkosuhonen/fft/blob/main/docs/week3.md)
 
+[week 5](https://github.com/Veikkosuhonen/fft/blob/main/docs/week5.md)
+
 ## Gradle
 
 `gradle run` to launch the desktop application. (Set `AUDIO_FILE` to point to a wav file if you want to skip the file-choosing dialog).
