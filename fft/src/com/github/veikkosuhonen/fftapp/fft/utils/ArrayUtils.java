@@ -23,6 +23,14 @@ public class ArrayUtils {
         return farr;
     }
 
+    public static byte[] toByteArray(float[] arr) {
+        byte[] farr = new byte[arr.length];
+        for (int i = 0; i < arr.length; i++) {
+            farr[i] = (byte) (arr[i] * 8);
+        }
+        return farr;
+    }
+
     /**
      * Creates a new array from a subsection of the original
      * @param arr The original array
@@ -159,5 +167,36 @@ public class ArrayUtils {
         arr[right] = arr[storeIndex];
         arr[storeIndex] = temp;
         return storeIndex;
+    }
+
+    public static float[] scale(float[] arr, float min, float max) {
+        float old_min = Float.MAX_VALUE;
+        float old_max = Float.MIN_VALUE;
+        for (int i = 0; i < arr.length; i++) {
+            if (arr[i] < old_min) {
+                old_min = arr[i];
+            }
+            if (arr[i] > old_max) {
+                old_max = arr[i];
+            }
+        }
+        float scale = (max - min) / (old_max - old_min);
+        for (int i = 0; i < arr.length; i++) {
+            arr[i] -= old_min;
+            arr[i] *= scale;
+            arr[i] += min;
+        }
+        return arr;
+    }
+
+    public static float[] clamp(float[] arr, float min, float max) {
+        for (int i = 0; i < arr.length; i++) {
+            if (arr[i] < min) {
+                arr[i] = min;
+            } else if (arr[i] > max) {
+                arr[i] = max;
+            }
+        }
+        return arr;
     }
 }

@@ -10,6 +10,7 @@ import com.github.veikkosuhonen.fftapp.audio.SoundPlayer;
 import com.github.veikkosuhonen.fftapp.fft.dct.FastDCT;
 import com.github.veikkosuhonen.fftapp.fft.utils.ArrayUtils;
 import com.github.veikkosuhonen.fftapp.fft.windowing.Hann;
+import com.github.veikkosuhonen.fftapp.fft.windowing.Square;
 
 import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -44,7 +45,7 @@ public class FFTApp extends ApplicationAdapter {
 	* Length of the frequency spectrum (per channel) rendered. Must be less than 511.
 	* Should match BUFFER_SIZE constant in fragment shader.
 	*/
-	final int SPECTRUM_LENGTH = 510;
+	final int SPECTRUM_LENGTH = 256;
 
 	SoundPlayer player;
 	DCTProcessor processor;
@@ -60,6 +61,8 @@ public class FFTApp extends ApplicationAdapter {
 	public void create() {
 
 		initializeGraphics();
+		createPixmapTexture();
+
 
 		processor = new DCTProcessor(
 				new FastDCT(),
@@ -93,15 +96,18 @@ public class FFTApp extends ApplicationAdapter {
 		gl.glClearColor(0, 0, 0, 1);
 		gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		double[][] data = processor.getLeftRightDCT();
-		float[] dataL = processFrequencyData(data[0]);
-		float[] dataR = processFrequencyData(data[1]);
-		float[] dataLR = ArrayUtils.join(dataL, dataR);
+		double[] data0 = processor.getLeftRightDCT();
+		float[] data = processFrequencyData(data0);
+		//float[] dataL = processFrequencyData(data[0]);
+		//float[] dataR = processFrequencyData(data[1]);
+		//float[] dataLR = ArrayUtils.join(dataL, dataR);
 
+		updatePixmap(data);
 		shader.bind();
-		shader.setUniformf("u_time", (time - startTime) * 1f / 1000);
-		shader.setUniform1fv("u_freq", dataLR, 0, SPECTRUM_LENGTH * 2);
+		//shader.setUniformf("u_time", (time - startTime) * 1f / 1000);
+		//shader.setUniform1fv("u_freq", dataLR, 0, SPECTRUM_LENGTH * 2);
 		shader.setUniformf("u_resolution", graphics.getWidth(), graphics.getHeight());
+		shader.setUniformi("spectrogram", 0);
 		mesh.render(shader, GL20.GL_TRIANGLES);
 	}
 	
@@ -120,20 +126,20 @@ public class FFTApp extends ApplicationAdapter {
 			throw new IllegalArgumentException("DCT data should not be less than SPECTRUM_LENGTH (" + data.length + " < " + SPECTRUM_LENGTH + ")");
 		}
 		float[] result = ArrayUtils.abs(ArrayUtils.toFloatArray(ArrayUtils.slice(data, SPECTRUM_LENGTH)));
-		//float mean = ArrayUtils.select(result, 0, SPECTRUM_LENGTH - 1, SPECTRUM_LENGTH / 2);
 
-		//Smooth
-		//for (int i = 1; i < SPECTRUM_LENGTH - 1; i++) {
-		//	result[i] = (result[i - 1] + 2 * result[i] + result[i + 1]) / 4;
-		//}
-		return result;
+		//Smooth and scale down
+		for (int i = 1; i < SPECTRUM_LENGTH - 1; i++) {
+			result[i] = (result[i - 1] + 2 * result[i] + result[i + 1]) / 4;
+			result[i] /= 4;
+		}
+		return ArrayUtils.clamp(result, 0, 1);
 	}
 
 	/**
 	 * Compile shader program and create the screen draw quad
 	 */
 	private void initializeGraphics() {
-		shader = new ShaderProgram(Gdx.files.internal("test.vert"), Gdx.files.internal("test.frag"));
+		shader = new ShaderProgram(Gdx.files.internal("test.vert"), Gdx.files.internal("texture.frag"));
 		shader.bind();
 
 		mesh = new Mesh(true, 4, 6, VertexAttribute.Position());
@@ -143,5 +149,38 @@ public class FFTApp extends ApplicationAdapter {
 					1f, 1f, 0f,
 					-1f, 1f, 0f});
 		mesh.setIndices(new short[] {0, 1, 2, 2, 3, 0});
+	}
+
+	Pixmap pixmap1;
+	Pixmap pixmap2;
+	Texture texture;
+	int w = 512;
+	int h = SPECTRUM_LENGTH;
+
+	private void updatePixmap(float[] data) {
+		Pixmap p1;
+		Pixmap p2;
+		if (graphics.getFrameId() % 2 == 0) {
+			p1 = pixmap1;
+			p2 = pixmap2;
+		} else {
+			p1 = pixmap2;
+			p2 = pixmap1;
+		}
+
+		p1.drawPixmap(p2, 0, 0, w - 1, h, 1, 0, w - 1, h);
+		p2.setColor(Color.BLACK);
+		p2.fill();
+		for (int i = 0; i < SPECTRUM_LENGTH; i++) {
+			p1.drawPixel(0, i, Color.rgba8888(data[i], 0f, 0f, 1f));
+		}
+		texture.draw(p1, 0, 0);
+		texture.bind(0);
+	}
+
+	private void createPixmapTexture() {
+		pixmap1 = new Pixmap(w, h, Pixmap.Format.RGBA8888);
+		pixmap2 = new Pixmap(w, h, Pixmap.Format.RGBA8888);
+		texture = new Texture(w, h, Pixmap.Format.RGBA8888);
 	}
 }
