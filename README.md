@@ -3,16 +3,20 @@ DSA-course project which implements several Discrete Fourier Transform algorithm
 
 The DFT implementations and tests are contained in the `fft` module. This is the important part regarding the DSA-course.
 
-The desktop application is built on the [LibGDX game framework](https://libgdx.com/) to render the frequency decomposition of audio in real time. 
+The desktop application is built on the [LibGDX game framework](https://libgdx.com/) to render the frequency spectrum of audio in real time. 
 The implementation is in the `core` module.
 
 
 
 ## Docs
 
+[User guide](https://github.com/Veikkosuhonen/fft/blob/main/docs/user_guide.md)
+
 [Design document](https://github.com/Veikkosuhonen/fft/blob/main/docs/design_document.md)
 
 [Implementation](https://github.com/Veikkosuhonen/fft/blob/main/docs/implementation.md)
+
+[Testing](https://github.com/Veikkosuhonen/fft/blob/main/docs/testing.md)
 
 ### Weekly reports
 
@@ -21,6 +25,8 @@ The implementation is in the `core` module.
 [week 2](https://github.com/Veikkosuhonen/fft/blob/main/docs/week2.md)
 
 [week 3](https://github.com/Veikkosuhonen/fft/blob/main/docs/week3.md)
+
+[week 5](https://github.com/Veikkosuhonen/fft/blob/main/docs/week5.md)
 
 ## Gradle
 
