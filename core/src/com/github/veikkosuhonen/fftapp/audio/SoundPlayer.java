@@ -19,15 +19,17 @@ import javax.sound.sampled.*;
  * SoundPlayer
  */
 public class SoundPlayer {
+    private boolean useMicrophone;
     private File audioFile;
-    private Thread sourceThread;
     private Queue<double[]> queue;
     private int chunkSize;
     private byte[] audioBytes;
 
-    public SoundPlayer(File audioFile, int chunkSize) {
+    public SoundPlayer(File audioFile, int chunkSize, boolean useMicrophone, Queue<double[]> queue) {
         this.audioFile = audioFile;
         this.chunkSize = chunkSize;
+        this.useMicrophone = useMicrophone;
+        this.queue = queue;
     }
 
     /**
@@ -36,65 +38,65 @@ public class SoundPlayer {
      * by the audio system.
      */
     public void start() {
-        try {
-            AudioFormat format = new AudioFormat(44000.0f, 16, 1, true, true);
-            //final AudioInputStream stream = AudioSystem.getAudioInputStream(audioFile);
-            //
-            final TargetDataLine stream = AudioSystem.getTargetDataLine(format);
-
-            DataLine.Info info = new DataLine.Info(TargetDataLine.class, format);
-            //stream = (TargetDataLine) AudioSystem.getLine(info);
-            stream.open(format);
-            stream.start();
-
-            info = new DataLine.Info(SourceDataLine.class, stream.getFormat());
-            final SourceDataLine sourceLine = (SourceDataLine) AudioSystem.getLine(info);
-            sourceLine.open();
-            //System.out.println(Arrays.toString(sourceLine.getControls()));
+        new Thread(() -> {
+            AudioFormat format;
+            DataLine.Info info;
+            TargetDataLine microphone = null;
+            AudioInputStream stream = null;
+            // Query and open input stream for audio file or targetdataline for microphone
+            try {
+                if (useMicrophone) {
+                    format = new AudioFormat(44100.0f, 16, 2, true, true);
+                    info = new DataLine.Info(TargetDataLine.class, format);
+                    microphone = (TargetDataLine) AudioSystem.getLine(info);
+                    microphone.open(format);
+                    microphone.start();
+                } else {
+                    stream = AudioSystem.getAudioInputStream(audioFile);
+                    format = stream.getFormat();
+                }
+            } catch (UnsupportedAudioFileException | IOException | LineUnavailableException uafe) {
+                uafe.printStackTrace();
+                return;
+            }
+            // Open a sourceline for output
+            info = new DataLine.Info(SourceDataLine.class, format);
+            final SourceDataLine sourceLine;
+            try {
+                sourceLine = (SourceDataLine) AudioSystem.getLine(info);
+                sourceLine.open();
+            } catch (LineUnavailableException lue) {
+                lue.printStackTrace();
+                return;
+            }
             setMasterGain(sourceLine);
 
-            sourceThread = new Thread() {
-                @Override
-                public void run() {
-                    int bytesPerFrame = stream.getFormat().getFrameSize();
-                    int numBytes = 1024 * bytesPerFrame;
-                    audioBytes = new byte[numBytes];
-                    int bytesRead;
-                    try {
-                        sourceLine.start();
-                        while ((bytesRead = stream.read(audioBytes, 0, numBytes)) != -1) {
-                            double[] chunk = new double[chunkSize];
-                            for (int i = 1; i < bytesRead / 2 && i < numBytes / 2; i++) {
-                                chunk[i % chunkSize] = audioBytes[2 * i - 1];
-                                if (i % chunkSize == chunkSize - 1) {
-                                    queue.offer(chunk);
-                                    chunk = new double[chunkSize];
-                                }
-                            }
-                            sourceLine.write(audioBytes, 0, bytesRead);
+            // Start reading in data
+            int bytesPerFrame = format.getFrameSize();
+            int numBytes = 1024 * bytesPerFrame;
+            audioBytes = new byte[numBytes];
+            int bytesRead;
+            try {
+                sourceLine.start();
+                do {
+                    bytesRead = useMicrophone ? microphone.read(audioBytes, 0, numBytes) : stream.read(audioBytes, 0, numBytes);
+                    double[] chunk = new double[chunkSize];
+                    for (int i = 1; i < bytesRead / 2 && i < numBytes / 2; i++) {
+                        chunk[i % chunkSize] = audioBytes[2 * i - 1];
+                        if (i % chunkSize == chunkSize - 1) {
+                            queue.offer(chunk);
+                            chunk = new double[chunkSize];
                         }
-                    } catch (Exception ioe) {
-                        ioe.printStackTrace();
                     }
-                    sourceLine.stop();
-                    sourceLine.close();
-                }
-            };
-
-            sourceThread.start();
-
-        } catch (LineUnavailableException /*| UnsupportedAudioFileException | IOException*/ lue) {lue.printStackTrace();}
-    }
-
-    public void setOutput(Queue<double[]> queue) {
-        this.queue = queue;
-    }
-
-    /**
-     * Interrupts the audio thread
-     */
-    public void stop() {
-        sourceThread.interrupt();
+                    sourceLine.write(audioBytes, 0, bytesRead);
+                } while (bytesRead != -1);
+            } catch (IOException ioe) {
+                ioe.printStackTrace();
+                return;
+            }
+            sourceLine.stop();
+            sourceLine.close();
+        }).start();
     }
 
     /**

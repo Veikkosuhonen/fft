@@ -27,7 +27,7 @@ public class FFTApp extends ApplicationAdapter {
 	/*
 	* Max capacity of the queue in chunks. Determines latency of the visualization alongside CHUNK_SIZE.
 	*/
-	final int QUEUE_LENGTH = 360;
+	final int QUEUE_LENGTH = 240;
 
 	/*
 	* How many chunks in a window. There's a frequency and temporal resolution tradeoff: larger value allows higher
@@ -63,24 +63,23 @@ public class FFTApp extends ApplicationAdapter {
 		initializeGraphics();
 		createPixmapTexture();
 
+		Queue<double[]> queue = new ArrayBlockingQueue<>(QUEUE_LENGTH);
 
 		processor = new DCTProcessor(
 				new FastDCT(),
 				CHUNK_SIZE,
 				WINDOW,
 				FPS,
-				new Hann(CHUNK_SIZE)
+				new Hann(CHUNK_SIZE * WINDOW),
+				queue
 		);
 
 		player = new SoundPlayer(
 				AudioFile.get(),
-				CHUNK_SIZE
+				CHUNK_SIZE,
+				false,
+				queue
 		);
-
-		Queue<double[]> queue = new ArrayBlockingQueue<>(QUEUE_LENGTH);
-		player.setOutput(queue);
-		processor.setInput(queue);
-
 		player.start();
 
 		startTime = System.currentTimeMillis();
@@ -96,13 +95,13 @@ public class FFTApp extends ApplicationAdapter {
 		gl.glClearColor(0, 0, 0, 1);
 		gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		double[] data0 = processor.getLeftRightDCT();
-		float[] data = processFrequencyData(data0);
-		//float[] dataL = processFrequencyData(data[0]);
-		//float[] dataR = processFrequencyData(data[1]);
+		double[][] data = processor.getLeftRightDCT();
+
+		float[] dataL = processFrequencyData(data[0]);
+		float[] dataR = processFrequencyData(data[1]);
 		//float[] dataLR = ArrayUtils.join(dataL, dataR);
 
-		updatePixmap(data);
+		updatePixmap(dataR);
 		shader.bind();
 		//shader.setUniformf("u_time", (time - startTime) * 1f / 1000);
 		//shader.setUniform1fv("u_freq", dataLR, 0, SPECTRUM_LENGTH * 2);
@@ -125,7 +124,7 @@ public class FFTApp extends ApplicationAdapter {
 		if (data.length < SPECTRUM_LENGTH) {
 			throw new IllegalArgumentException("DCT data should not be less than SPECTRUM_LENGTH (" + data.length + " < " + SPECTRUM_LENGTH + ")");
 		}
-		float[] result = ArrayUtils.abs(ArrayUtils.toFloatArray(ArrayUtils.slice(data, SPECTRUM_LENGTH)));
+		float[] result = ArrayUtils.abs(ArrayUtils.toFloatArray(ArrayUtils.slice(data, 2, SPECTRUM_LENGTH + 2)));
 
 		//Smooth and scale down
 		for (int i = 1; i < SPECTRUM_LENGTH - 1; i++) {

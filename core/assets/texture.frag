@@ -16,7 +16,7 @@ void main() {
     st -= vec2(0.1, 0.1);
     float a = texture2D(spectrogram, st).r;
     a *= step(-st.x, 0.0) * step(-st.y, 0.0) * step(st.x, 1.0) * step(st.y, 1.0);
-    gl_FragColor = colormap(a * 3.0 - 0.2);
+    gl_FragColor = colormap(a - 0.3);
 }
 
 float colormap_red(float x) {
