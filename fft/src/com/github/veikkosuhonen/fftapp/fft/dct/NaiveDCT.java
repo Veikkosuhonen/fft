@@ -20,9 +20,9 @@ public class NaiveDCT extends DCT {
         for (int i = 0; i < n; i++) {
             double sum = 0;
             for (int j = 0; j < n; j++) {
-                sum += signal[j] * Math.cos(pi_over_n * j * (i + 0.5));
+                sum += signal[j] * Math.cos(pi_over_n * i * (j + 0.5));
             }
-            result[i] = (sum + 0.5 * signal[0]) / n; //Scaled by n
+            result[i] = sum / n; //Scaled by n
         }
         return result;
     }
