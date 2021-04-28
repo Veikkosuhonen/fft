@@ -3,7 +3,7 @@ DSA-course project which implements several Discrete Fourier Transform algorithm
 
 The DFT implementations and tests are contained in the `fft` module. This is the important part regarding the DSA-course.
 
-The desktop application is built on the [LibGDX game framework](https://libgdx.com/) to render the frequency spectrum of audio in real time. 
+The desktop application is built on the [LibGDX game framework](https://libgdx.com/) to render the frequency spectrogram of audio in real time. 
 The implementation is in the `core` module.
 
 
