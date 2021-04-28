@@ -3,19 +3,25 @@ package com.github.veikkosuhonen.fftapp.fft.dct;
 import com.github.veikkosuhonen.fftapp.fft.dft.DFT;
 
 /**
- * SimpleRealOnlyDFT calculates the DCT using a DFT-algorithm by adding a zero imaginary component to the real signal
+ * Computes the Discrete Cosine Transform <a href="https://en.wikipedia.org/wiki/Discrete_cosine_transform#DCT-II">
+ * using a DFT-algorithm.
  */
-public class RealOnlyDFT extends DCT {
+public class DFTDCT extends DCT {
 
     private DFT dft;
 
     /**
      * @param dft The DFT object to be used for calculation
      */
-    public RealOnlyDFT(DFT dft) {
+    public DFTDCT(DFT dft) {
         this.dft = dft;
     }
 
+    /**
+     * @param signal The signal for which to calculate the DCT. The length of the array must be a power of two,
+     *               else an <code>IllegalArgumentException is thrown</code>
+     * @return The calculated DCT values.
+     */
     @Override
     public double[] process(double[] signal) {
         int n = signal.length;
@@ -26,7 +32,7 @@ public class RealOnlyDFT extends DCT {
             real[n - 1 - i] = signal[i * 2 + 1];
         }
 
-        double[][] signalRI = new double[][] {signal, new double[n]};
+        double[][] signalRI = new double[][] {real, new double[n]};
         double[][] resultRI = dft.process(signalRI);
 
         real = resultRI[0];

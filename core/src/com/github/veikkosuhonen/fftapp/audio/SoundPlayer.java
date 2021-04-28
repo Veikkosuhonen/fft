@@ -1,16 +1,8 @@
 package com.github.veikkosuhonen.fftapp.audio;
 
-import com.github.veikkosuhonen.fftapp.fft.dct.DCT;
-import com.github.veikkosuhonen.fftapp.fft.dct.FastDCT;
-import com.github.veikkosuhonen.fftapp.fft.dct.NaiveDCT;
-import com.github.veikkosuhonen.fftapp.fft.dct.RealOnlyDFT;
-import com.github.veikkosuhonen.fftapp.fft.dft.InPlaceFFT;
-
 import java.io.File;
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.Queue;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.logging.Logger;
 
 import javax.sound.sampled.*;
