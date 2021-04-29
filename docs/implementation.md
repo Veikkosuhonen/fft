@@ -3,13 +3,17 @@
 ## Project architecture
 ![architecture](https://github.com/Veikkosuhonen/fft/blob/main/docs/architecture.png)
 
-The discrete fourier transform and discrete cosine transform algorithms are implemented and tested in the fft module, along with some utility classes.
+The [discrete fourier transform](https://en.wikipedia.org/wiki/Discrete_Fourier_transform) and [discrete cosine transform](https://en.wikipedia.org/wiki/Discrete_cosine_transform) algorithms are implemented and tested in the fft module, along with some utility classes.
 The application with the rendering, UI, sound playing and processing logic is implemented in the core module, where DCT algorithms and methods from the ArrayUtils-class are used. 
 
-### The DFT and FFT algorithms
+### The DFT and [FFT](https://en.wikipedia.org/wiki/Fast_Fourier_transform) algorithms
 
 TODO basic explanation. I admit the mathematical background is quite difficult for me to properly understand, but I hope I can vaguely explain the basic idea and why
 FFT is so _Fast_.
+
+### Motivation to use DCT instead of DFT
+
+Great question, the more I learn about the topic the less I understand it. The discrete cosine transform is commonly used for data compression (for example jpg and mp3) and less often for spectral analysis, which is what this application is doing. My belief is 1. that it is more efficient, as it does not consider imaginary values and phase, thus seemingly better fitting this domain, and 2. that it may have higher resolution. 2. is probably false but at least it gives me more values in the frequency range, even though I guess the information content is ultimately the same as with DFT. One does not simply overcome the [Nyquist limit](https://en.wikipedia.org/wiki/Nyquist_frequency).
 
 ## Application dataflow
 ![dataflow](https://github.com/Veikkosuhonen/fft/blob/main/docs/dataflow.png)
@@ -22,7 +26,7 @@ Quick walkthough of the relatively messy code.
 ArrayBlockingQueue, which acts as a one way data channel from the SoundPlayer to the DCTProcessor. 
 2. The SoundPlayer's start-method creates and runs a thread, which
 opens an AudioInputStream to the audio file, and a SourceDataLine for the audio playback. 
-3. PCM audio-data is read from the inputstream in a while loop, and is
+3. [PCM](https://en.wikipedia.org/wiki/Pulse-code_modulation) audio-data is read from the inputstream in a while loop, and is
 converted to chunks of double arrays, which are appended to the queue. 
 4. In the render thread, each frame, the DCTProcessor method getLeftRightDCT is called. This iterates through the first n chunks in the queue, where n is specified by
 WINDOW_LENGTH, and builds a "window", a double array of length WINDOW_LENGTH * CHUNK_SIZE for left and right channels (In dual channel PCM audio format, even members
