@@ -12,6 +12,8 @@ WAV files can be played as is as they are in the PCM format, but MP3 files need 
 with [ffmpeg](https://www.ffmpeg.org/), using the command `ffmpeg -i inputfile.mp3 PROJECT_ROOT/fftapp_temp.wav`, and then play the converted file `fftapp_temp.wav`.
 If ffmpeg is not installed and included in PATH, this will fail. 
 
+Once (if) you got it running, maximize the window and enjoy :)
+
 ### Running benchmarks
 
 Run the benchmark with `./gradlew benchmark` or `gradle benchmark`. This will take a few seconds and finally show a plot of the results.
