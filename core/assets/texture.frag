@@ -1,10 +1,6 @@
 //#version 120 core
 
-//const int BUFFER_SIZE = 510;
-
-uniform float u_time;
 uniform vec2 u_resolution;
-//uniform float u_freq[BUFFER_SIZE * 2];
 
 uniform sampler2D spectrogram;
 
@@ -12,12 +8,14 @@ vec4 colormap(float x);
 
 void main() {
     vec2 st = gl_FragCoord.st / u_resolution;
-    st *= vec2(1.2, 1.2);
+    st *= vec2(1.2, 1.2); // zoom out a bit
     st -= vec2(0.1, 0.1);
-    float a = texture2D(spectrogram, st).r;
-    a *= step(-st.x, 0.0) * step(-st.y, 0.0) * step(st.x, 1.0) * step(st.y, 1.0);
-    gl_FragColor = colormap(a - 0.3);
+    float a = texture2D(spectrogram, st).r; // get the frequencyy
+    a *= step(-st.x, 0.0) * step(-st.y, 0.0) * step(st.x, 1.0) * step(st.y, 1.0); // make it zero outside the texture
+    gl_FragColor = colormap(a - 0.2);
 }
+
+// Colormap from https://github.com/kbinani/colormap-shaders/blob/master/shaders/glsl/IDL_CB-Spectral.frag
 
 float colormap_red(float x) {
     if (x < 0.09752005946586478) {
