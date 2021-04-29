@@ -27,6 +27,7 @@ converted to chunks of double arrays, which are appended to the queue.
 4. In the render thread, each frame, the DCTProcessor method getLeftRightDCT is called. This iterates through the first n chunks in the queue, where n is specified by
 WINDOW_LENGTH, and builds a "window", a double array of length WINDOW_LENGTH * CHUNK_SIZE for left and right channels (In dual channel PCM audio format, even members
 are the left channel and uneven the right channel).
+5. k chunks need to be removed from the queue in order to have the window update at a correct speed and make new space in the queue. This is determined by the equation `k = SAMPLE_RATE / (FRAME_RATE * CHUNK_SIZE / 2)`, where SAMPLE_RATE is assumed to be 44100 hertz (typical for normal audio) and FRAME_RATE is assumed to be 60 (locked in the application config). Divided by two since there are two channels.
 5. The discrete cosine transform is calculated for the windows of both channels, by calling twice the process-method of the DCT-object given to the DCTProcessor. The 
 calculated dct-values are returned in a double array.
 6. In the render-method, some preprocessing is done on the dct-values. For example, only the first n frequencies need to be rendered (where n is SPECTRUM_LENGTH) as
