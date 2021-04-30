@@ -18,9 +18,9 @@ public class Test {
         double[] fx = dct.process(signal);
         double[] fx1 = dct1.process(signal);
         new PlotBuilder()
-                .addChart(new ChartBuilder()
-                        .addSeries(fx, "DCT")
-                        .addSeries(fx1, "DCT1")
+                .chart(new ChartBuilder()
+                        .series(fx, "DCT")
+                        .series(fx1, "DCT1")
                         .build("Discrete Fourier Transform", "frequency", "magnitude"))
                 .show();
     }

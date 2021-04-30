@@ -16,7 +16,7 @@ public class ChartBuilder {
         dataset = new XYSeriesCollection();
     }
 
-    public ChartBuilder addSeries(double[] y, int[] x, String name) {
+    public ChartBuilder series(double[] y, int[] x, String name) {
         if (y.length != x.length) {
             throw new IllegalArgumentException("X and y series must be equal length");
         }
@@ -28,7 +28,7 @@ public class ChartBuilder {
         return this;
     }
 
-    public ChartBuilder addSeries(double[] y, String name) {
+    public ChartBuilder series(double[] y, String name) {
         XYSeries series = new XYSeries(name);
         for (int i = 0; i < y.length; i++) {
             series.add(i, y[i]);

@@ -14,7 +14,7 @@ public class PlotBuilder {
         this.panel.setBackground(Color.DARK_GRAY);
     }
 
-    public PlotBuilder addChart(ChartPanel chartPanel) {
+    public PlotBuilder chart(ChartPanel chartPanel) {
         this.panel.add(chartPanel);
         return this;
     }
