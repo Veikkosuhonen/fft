@@ -4,7 +4,7 @@ sourceCompatibility = 1.8
 sourceSets.main.java.srcDirs = [ "src/" ]
 
 task benchmark(dependsOn: classes, type: JavaExec) {
-    main = "BenchmarkSuite"
+    main = "benchmark.BenchmarkSuite"
     classpath = sourceSets.main.runtimeClasspath
 }
 
