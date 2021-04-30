@@ -3,6 +3,8 @@ import org.junit.Assert;
 import org.junit.Test;
 import utils.Signal;
 
+import java.util.Arrays;
+
 public class DFTTest {
 
     double MAX_ERROR = 0.001;
@@ -73,11 +75,11 @@ public class DFTTest {
         int n = 128;
         double[][] signal = new double[][] {Signal.generateSineComposite(n, new double[]{3, 10, 28}), new double[n]};
 
-        double[][] Fx = fft.process(signal);
+        double[][] fx = fft.process(signal);
         double[][] rFx = rfft.process(signal);
 
-        Assert.assertArrayEquals("Real results close to reference", rFx[0], Fx[0], MAX_ERROR);
-        Assert.assertArrayEquals("Imaginary results close to reference", rFx[1], Fx[1], MAX_ERROR);
+        Assert.assertArrayEquals("Real results close to reference", rFx[0], fx[0], MAX_ERROR);
+        Assert.assertArrayEquals("Imaginary results close to reference", rFx[1], fx[1], MAX_ERROR);
     }
 
     @Test
@@ -85,6 +87,35 @@ public class DFTTest {
         DFT dft = new InPlaceFFT();
 
         int n = 128;
+        double[][] signal = new double[][] {Signal.generateSineComposite(n, new double[]{3, 10, 28}), new double[n]};
+
+        double[][] fx = dft.process(signal);
+
+        Assert.assertEquals("Calculates freq 3", 0.5, fx[0][3], MAX_ERROR);
+        Assert.assertEquals("Calculates freq 10", 0.5, fx[0][10], MAX_ERROR);
+        Assert.assertEquals("Calculates freq 28", 0.5, fx[0][28], MAX_ERROR);
+    }
+
+    @Test
+    public void testOptimizedInPlaceFFTMatchesReference() {
+        DFT fft = new OptimizedInPlaceFFT();
+        DFT rfft = new ReferenceFFT();
+
+        int n = 128;
+        double[][] signal = new double[][] {Signal.generateSineComposite(n, new double[]{3, 10, 28}), new double[n]};
+
+        double[][] fx = fft.process(signal);
+        double[][] rFx = rfft.process(signal);
+
+        Assert.assertArrayEquals("Real results close to reference", rFx[0], fx[0], MAX_ERROR);
+        Assert.assertArrayEquals("Imaginary results close to reference", rFx[1], fx[1], MAX_ERROR);
+    }
+
+    @Test
+    public void testOptimizedInPlaceFFTCorrectness() {
+        DFT dft = new OptimizedInPlaceFFT();
+
+        int n = 32;
         double[][] signal = new double[][] {Signal.generateSineComposite(n, new double[]{3, 10, 28}), new double[n]};
 
         double[][] fx = dft.process(signal);

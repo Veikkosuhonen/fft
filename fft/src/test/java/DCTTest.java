@@ -45,19 +45,14 @@ public class DCTTest {
 
     @Test
     public void testMatch() {
-        DCT naiveDct = new NaiveDCT();
         DCT fdct = new FastDCT();
         DCT reference = new DFTDCT(new ReferenceFFT());
 
         int n = 8;
         double[] signal = Signal.generateSineComposite(n, new double[]{3, 10, 28});
 
-        double[] nFx = naiveDct.process(signal);
         double[] fx = fdct.process(signal);
         double[] rFx = reference.process(signal);
-        System.out.println(Arrays.toString(nFx));
-        System.out.println(Arrays.toString(fx));
-        System.out.println(Arrays.toString(rFx));
         Assert.assertArrayEquals(rFx, fx, MAX_ERROR);
     }
 }
