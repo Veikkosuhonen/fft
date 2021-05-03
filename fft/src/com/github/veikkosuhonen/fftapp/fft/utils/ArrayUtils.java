@@ -15,22 +15,6 @@ public class ArrayUtils {
         return farr;
     }
 
-    public static double[] toDoubleArray(int[] arr) {
-        double[] farr = new double[arr.length];
-        for (int i = 0; i < arr.length; i++) {
-            farr[i] = arr[i];
-        }
-        return farr;
-    }
-
-    public static byte[] toByteArray(float[] arr) {
-        byte[] farr = new byte[arr.length];
-        for (int i = 0; i < arr.length; i++) {
-            farr[i] = (byte) (arr[i] * 8);
-        }
-        return farr;
-    }
-
     /**
      * Creates a new array from a subsection of the original
      * @param arr The original array
@@ -169,6 +153,13 @@ public class ArrayUtils {
         return storeIndex;
     }
 
+    /**
+     * Transforms the values in the array by scaling to the range (min, max)
+     * @param arr the array to be modified
+     * @param min the minimum of the range
+     * @param max the maximum of the range
+     * @return the modified array
+     */
     public static float[] scale(float[] arr, float min, float max) {
         float old_min = Float.MAX_VALUE;
         float old_max = Float.MIN_VALUE;
@@ -189,6 +180,13 @@ public class ArrayUtils {
         return arr;
     }
 
+    /**
+     * Transforms the values in the array by clamping to the range (min, max)
+     * @param arr the array to be modified
+     * @param min the minimum of the range
+     * @param max the maximum of the range
+     * @return the modified array
+     */
     public static float[] clamp(float[] arr, float min, float max) {
         for (int i = 0; i < arr.length; i++) {
             if (arr[i] < min) {

@@ -60,7 +60,6 @@ public class OptimizedInPlaceFFT extends DFT {
         double wR, wI;
         int k = 0; // index counter for the roots of unity array
         for (int len = 2; len <= n; len <<= 1) {
-            double angle = 2 * Math.PI / len;
             for (int i = 0; i < n; i += len) {
                 for (int j = 0; j < len / 2; j++) {
                     wR = rootOfUnityR[k];
@@ -86,8 +85,7 @@ public class OptimizedInPlaceFFT extends DFT {
             }
         }
     }
-
-
+    
     /**
      * Optimization: precompute the roots of unity for the rearranged input array of size n.
      * There are n/2 * log2(n) of those, for each operation in the triple for loop in the algorithm.

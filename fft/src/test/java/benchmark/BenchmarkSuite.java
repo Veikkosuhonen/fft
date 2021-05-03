@@ -18,8 +18,8 @@ public class BenchmarkSuite {
 
         int trials = 150; // how many trials to run
         int warmup = 75; // how many warmup runs to do
-        int sizes = 10; // how many (power of two) sizes of samples to do
-        int startAt = 10; // smallest (power of two) sample size
+        int sizes = 8; // how many (power of two) sizes of samples to do
+        int startAt = 8; // smallest (power of two) sample size
         int[] sampleSizes = new int[sizes]; // For X-axis values
 
         double[] naiveDFTTime = new double[sizes];

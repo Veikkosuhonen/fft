@@ -2,6 +2,8 @@ import com.github.veikkosuhonen.fftapp.fft.utils.ArrayUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.Arrays;
+
 public class ArrayUtilsTest {
 
     @Test
@@ -52,5 +54,22 @@ public class ArrayUtilsTest {
         Assert.assertEquals(1, ArrayUtils.select(arr, 0, arr.length - 1, arr.length - 1), 0);
         Assert.assertEquals(0, ArrayUtils.select(arr, 0, arr.length - 1, arr.length / 2), 0);
         Assert.assertEquals(0, ArrayUtils.select(arr, 0, arr.length - 1, 0), 0);
+    }
+
+    @Test
+    public void testScale() {
+        float[] arr = new float[] {5, 3, 2, 4, 1};
+        ArrayUtils.scale(arr, -1, 1);
+        System.out.println(Arrays.toString(arr));
+        float[] expected = new float[] {1f, 0f, -0.5f, 0.5f, -1f};
+        Assert.assertArrayEquals(expected, arr, 0.001f);
+    }
+
+    @Test
+    public void testClamp() {
+        float[] arr = new float[] {5, 3, 2, 4, 1};
+        ArrayUtils.clamp(arr, 2, 3);
+        float[] expected = new float[] {3, 3, 2, 3, 2};
+        Assert.assertArrayEquals(expected, arr, 0.001f);
     }
 }
