@@ -7,8 +7,12 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.github.veikkosuhonen.fftapp.audio.AudioFile;
 import com.github.veikkosuhonen.fftapp.audio.DCTProcessor;
 import com.github.veikkosuhonen.fftapp.audio.SoundPlayer;
+import com.github.veikkosuhonen.fftapp.fft.dct.DFTDCT;
 import com.github.veikkosuhonen.fftapp.fft.dct.FastDCT;
+import com.github.veikkosuhonen.fftapp.fft.dft.OptimizedInPlaceFFT;
 import com.github.veikkosuhonen.fftapp.fft.utils.ArrayUtils;
+import com.github.veikkosuhonen.fftapp.fft.utils.BlockingQueue;
+import com.github.veikkosuhonen.fftapp.fft.utils.ChunkQueue;
 import com.github.veikkosuhonen.fftapp.fft.windowing.Hann;
 
 import java.util.Queue;
@@ -46,6 +50,7 @@ public class FFTApp extends ApplicationAdapter {
 	*/
 	final int SPECTRUM_LENGTH = 512;
 
+	ChunkQueue queue;
 	SoundPlayer player;
 	DCTProcessor processor;
 
@@ -62,14 +67,13 @@ public class FFTApp extends ApplicationAdapter {
 		initializeGraphics();
 		createPixmapTexture();
 
-		Queue<double[]> queue = new ArrayBlockingQueue<>(QUEUE_LENGTH);
+		queue = new BlockingQueue(QUEUE_LENGTH, CHUNK_SIZE);
 
 		processor = new DCTProcessor(
-				new FastDCT(),
+				new DFTDCT(new OptimizedInPlaceFFT()),
 				CHUNK_SIZE,
 				WINDOW,
 				FPS,
-				new Hann(CHUNK_SIZE * WINDOW),
 				queue
 		);
 
@@ -98,8 +102,8 @@ public class FFTApp extends ApplicationAdapter {
 
 		float[] dataL = processFrequencyData(data[0]);
 		float[] dataR = processFrequencyData(data[1]);
-		//float[] dataLR = ArrayUtils.join(dataL, dataR);
-
+		float[] dataLR = ArrayUtils.join(dataL, dataR);
+		//System.out.println(queue.remainingCapacity());
 		updatePixmap(dataR);
 		shader.bind();
 		//shader.setUniformf("u_time", (time - startTime) * 1f / 1000);
@@ -128,7 +132,7 @@ public class FFTApp extends ApplicationAdapter {
 		//Smooth and scale down
 		for (int i = 1; i < SPECTRUM_LENGTH - 1; i++) {
 			result[i] = (result[i - 1] + 2 * result[i] + result[i + 1]) / 4;
-			result[i] /= 4;
+			result[i] *= 1;
 		}
 		return ArrayUtils.clamp(result, 0, 1);
 	}

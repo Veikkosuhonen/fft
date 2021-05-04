@@ -1,5 +1,8 @@
 package com.github.veikkosuhonen.fftapp.audio;
 
+import com.github.veikkosuhonen.fftapp.fft.utils.BlockingQueue;
+import com.github.veikkosuhonen.fftapp.fft.utils.ChunkQueue;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Queue;
@@ -13,11 +16,11 @@ import javax.sound.sampled.*;
 public class SoundPlayer {
     private boolean useMicrophone;
     private File audioFile;
-    private Queue<double[]> queue;
+    private ChunkQueue queue;
     private int chunkSize;
     private byte[] audioBytes;
 
-    public SoundPlayer(File audioFile, int chunkSize, boolean useMicrophone, Queue<double[]> queue) {
+    public SoundPlayer(File audioFile, int chunkSize, boolean useMicrophone, ChunkQueue queue) {
         this.audioFile = audioFile;
         this.chunkSize = chunkSize;
         this.useMicrophone = useMicrophone;
