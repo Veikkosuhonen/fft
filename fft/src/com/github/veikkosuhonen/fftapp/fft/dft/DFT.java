@@ -27,13 +27,14 @@ public abstract class DFT {
     public abstract double[][] process(double[][] dataRI, boolean normalize) throws IllegalArgumentException;
 
     protected void validateInput(double[][] a) {
+        if (a.length != 2) {
+            throw new IllegalArgumentException("Input signal should contain two arrays (got " + a.length + ")");
+        }
         int n = a[0].length;
         if ((n & (n - 1)) != 0) {
             throw new IllegalArgumentException("Length of the real and imaginary signals must be a power of two (was " + n + ")");
         } else if (n != a[1].length) {
             throw new IllegalArgumentException("Length of the real and imaginary signal must match (" + n + " != " + a[1].length + ")");
-        } else if (a.length != 2) {
-            throw new IllegalArgumentException("Input signal should contain two arrays (got " + a.length + ")");
         }
     }
 }

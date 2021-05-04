@@ -39,7 +39,6 @@ public class ArrayUtilsTest {
         Assert.assertArrayEquals(arr1, ArrayUtils.abs(arr2), 0.001f);
     }
 
-
     @Test
     public void testSelect() {
         float[] arr = new float[] {5, 3, 2, 4, 1};
@@ -71,5 +70,12 @@ public class ArrayUtilsTest {
         ArrayUtils.clamp(arr, 2, 3);
         float[] expected = new float[] {3, 3, 2, 3, 2};
         Assert.assertArrayEquals(expected, arr, 0.001f);
+    }
+
+    @Test
+    public void testToFloatArray() {
+        double[] arr = new double[] {1, 2, 3};
+        float[] expected = new float[] {1, 2, 3};
+        Assert.assertArrayEquals(expected, ArrayUtils.toFloatArray(arr), 0.0f);
     }
 }

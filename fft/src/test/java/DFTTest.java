@@ -124,4 +124,56 @@ public class DFTTest {
         Assert.assertEquals("Calculates freq 10", 0.5, fx[0][10], MAX_ERROR);
         Assert.assertEquals("Calculates freq 28", 0.5, fx[0][28], MAX_ERROR);
     }
+
+    @Test
+    public void testValidateInput() {
+        DFT dft = new DFT() {
+            @Override
+            public double[][] process(double[][] dataRI) throws IllegalArgumentException {
+                return process(dataRI, true);
+            }
+
+            @Override
+            public double[][] process(double[][] dataRI, boolean normalize) throws IllegalArgumentException {
+                super.validateInput(dataRI);
+                return new double[0][];
+            }
+        };
+        double[][] invalidInput1 = new double[1][4];
+        double[][] invalidInput2 = new double[2][3];
+        double[][] invalidInput3 = new double[][] {new double[2], new double[4]};
+        double[][] validInput1 = new double[2][1024];
+
+        boolean invalid = false;
+        try {
+            dft.process(invalidInput1);
+        } catch (IllegalArgumentException iae) {
+            invalid = true;
+        }
+        Assert.assertTrue("throws on invalid1", invalid);
+
+        invalid = false;
+        try {
+            dft.process(invalidInput2);
+        } catch (IllegalArgumentException iae) {
+            invalid = true;
+        }
+        Assert.assertTrue("throws on invalid2", invalid);
+
+        invalid = false;
+        try {
+            dft.process(invalidInput3);
+        } catch (IllegalArgumentException iae) {
+            invalid = true;
+        }
+        Assert.assertTrue("throws on invalid3", invalid);
+
+        invalid = false;
+        try {
+            dft.process(validInput1);
+        } catch (IllegalArgumentException iae) {
+            invalid = true;
+        }
+        Assert.assertFalse("does not throw on valid1", invalid);
+    }
 }

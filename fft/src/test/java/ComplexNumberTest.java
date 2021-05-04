@@ -38,4 +38,16 @@ public class ComplexNumberTest {
         Assert.assertNotEquals(a, c);
         Assert.assertNotEquals(a, new Object());
     }
+
+    @Test
+    public void testToString() {
+        Assert.assertEquals("[3.0, -3.0i]", new Complex(3, -3).toString());
+    }
+
+    @Test
+    public void testHashCode() {
+        int code = new Complex(5, 6).hashCode();
+        Assert.assertEquals(code, new Complex(5, 6).hashCode());
+        Assert.assertNotEquals(code, new Complex(6, 5).hashCode());
+    }
 }
