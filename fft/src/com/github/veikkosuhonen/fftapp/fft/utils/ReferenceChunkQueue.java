@@ -9,6 +9,11 @@ public class ReferenceChunkQueue implements ChunkQueue {
     private int capacity;
     private int chunkSize;
 
+    /**
+     * Constructs a ReferenceChunkQueue with specified capacity and chunk size
+     * @param capacity how many elements the queue can hold at maximum
+     * @param chunkSize the size of the elements (or chunks) in the queue
+     */
     public ReferenceChunkQueue(int capacity, int chunkSize) {
         this.capacity = capacity;
         this.chunkSize = chunkSize;

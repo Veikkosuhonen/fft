@@ -8,16 +8,13 @@ import com.github.veikkosuhonen.fftapp.audio.AudioFile;
 import com.github.veikkosuhonen.fftapp.audio.DCTProcessor;
 import com.github.veikkosuhonen.fftapp.audio.SoundPlayer;
 import com.github.veikkosuhonen.fftapp.fft.dct.DFTDCT;
-import com.github.veikkosuhonen.fftapp.fft.dct.FastDCT;
 import com.github.veikkosuhonen.fftapp.fft.dft.OptimizedInPlaceFFT;
 import com.github.veikkosuhonen.fftapp.fft.utils.ArrayUtils;
-import com.github.veikkosuhonen.fftapp.fft.utils.BlockingQueue;
 import com.github.veikkosuhonen.fftapp.fft.utils.ChunkQueue;
 import com.github.veikkosuhonen.fftapp.fft.utils.ReferenceChunkQueue;
-import com.github.veikkosuhonen.fftapp.fft.windowing.Hann;
 
+import java.util.ArrayDeque;
 import java.util.Queue;
-import java.util.concurrent.ArrayBlockingQueue;
 
 import static com.badlogic.gdx.Gdx.*;
 
@@ -51,6 +48,28 @@ public class FFTApp extends ApplicationAdapter {
 	*/
 	final int SPECTRUM_LENGTH = 512;
 
+
+	/**
+	 * How many previous frames the averaged normalization takes into account
+	 */
+	final int normalizeLag = 32;
+
+	/**
+	 * Magic value. Should be less than normalizeLag, little bit lower looks nice. Lower value results in less clipping
+	 * but less dynamic range for the colors.
+	 */
+	final float normalizeFactor = 28.0f;
+
+	/**
+	 * The queue that holds maximum values of each frame used in averaged normalization
+	 */
+	Queue<Float> maxValue;
+
+	/**
+	 * The average maximum value of the last normalizeLag frames
+	 */
+	float avgMax;
+
 	ChunkQueue queue;
 	SoundPlayer player;
 	DCTProcessor processor;
@@ -67,6 +86,9 @@ public class FFTApp extends ApplicationAdapter {
 
 		initializeGraphics();
 		createPixmapTexture();
+
+		maxValue = new ArrayDeque<>(normalizeLag);
+		avgMax = 0.0f;
 
 		queue = new ReferenceChunkQueue(QUEUE_LENGTH, CHUNK_SIZE);
 
@@ -128,21 +150,30 @@ public class FFTApp extends ApplicationAdapter {
 		if (data.length < SPECTRUM_LENGTH) {
 			throw new IllegalArgumentException("DCT data should not be less than SPECTRUM_LENGTH (" + data.length + " < " + SPECTRUM_LENGTH + ")");
 		}
+		// Slice from the range (2, SPECTRUM_LENGTH + 2), convert to float, convert to absolute values
 		float[] result = ArrayUtils.abs(ArrayUtils.toFloatArray(ArrayUtils.slice(data, 2, SPECTRUM_LENGTH + 2)));
 
-		//Smooth and scale down
+		//Smooth: slightly average neighboring values.
 		for (int i = 1; i < SPECTRUM_LENGTH - 1; i++) {
 			result[i] = (result[i - 1] + 2 * result[i] + result[i + 1]) / 4;
-			result[i] *= 1;
 		}
-		return ArrayUtils.clamp(result, 0, 1);
+
+		// calculate the average max for normalization
+		float max = ArrayUtils.max(result);
+		maxValue.add(max);
+		avgMax += max;
+		if (maxValue.size() >= normalizeLag) {
+			avgMax -= maxValue.remove();
+		}
+		// return the normalized data
+		return ArrayUtils.scale(result, 0, avgMax / normalizeFactor, 0, 1);
 	}
 
 	/**
 	 * Compile shader program and create the screen draw quad
 	 */
 	private void initializeGraphics() {
-		shader = new ShaderProgram(Gdx.files.internal("test.vert"), Gdx.files.internal("texture.frag"));
+		shader = new ShaderProgram(Gdx.files.internal("test.vert"), Gdx.files.internal("texturebars.frag"));
 		shader.bind();
 
 		mesh = new Mesh(true, 4, 6, VertexAttribute.Position());

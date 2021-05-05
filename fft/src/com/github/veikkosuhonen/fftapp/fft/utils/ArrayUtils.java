@@ -161,19 +161,38 @@ public class ArrayUtils {
      * @return the modified array
      */
     public static float[] scale(float[] arr, float min, float max) {
-        float old_min = Float.MAX_VALUE;
-        float old_max = Float.MIN_VALUE;
+        float oldMin = Float.MAX_VALUE;
+        float oldMax = Float.MIN_VALUE;
         for (int i = 0; i < arr.length; i++) {
-            if (arr[i] < old_min) {
-                old_min = arr[i];
+            if (arr[i] < oldMin) {
+                oldMin = arr[i];
             }
-            if (arr[i] > old_max) {
-                old_max = arr[i];
+            if (arr[i] > oldMax) {
+                oldMax = arr[i];
             }
         }
-        float scale = (max - min) / (old_max - old_min);
+        float scale = (max - min) / (oldMax - oldMin);
         for (int i = 0; i < arr.length; i++) {
-            arr[i] -= old_min;
+            arr[i] -= oldMin;
+            arr[i] *= scale;
+            arr[i] += min;
+        }
+        return arr;
+    }
+
+    /**
+     * Transforms the values in the array by scaling from the range(oldMin, oldMax) to the range (min, max)
+     * @param arr the array to be modified
+     * @param oldMin the minimum of the original range
+     * @param oldMax the maximum of the original range
+     * @param min the minimum of the new range
+     * @param max the maximum of the new range
+     * @return the modified array
+     */
+    public static float[] scale(float[] arr, float oldMin, float oldMax, float min, float max) {
+        float scale = (max - min) / (oldMax - oldMin);
+        for (int i = 0; i < arr.length; i++) {
+            arr[i] -= oldMin;
             arr[i] *= scale;
             arr[i] += min;
         }
@@ -196,5 +215,13 @@ public class ArrayUtils {
             }
         }
         return arr;
+    }
+
+    public static float max(float[] arr) {
+        float max = Float.MIN_VALUE;
+        for (int i = 0; i < arr.length; i++) {
+            max = arr[i] > max ? arr[i] : max;
+        }
+        return max;
     }
 }

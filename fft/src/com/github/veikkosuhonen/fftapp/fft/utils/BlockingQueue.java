@@ -2,7 +2,7 @@ package com.github.veikkosuhonen.fftapp.fft.utils;
 
 public class BlockingQueue implements ChunkQueue {
 
-    private final int blockSize;
+    private final int chunkSize;
     private final int capacity;
     private final double[] array;
 
@@ -11,18 +11,23 @@ public class BlockingQueue implements ChunkQueue {
     private int tail = 0;
     private final Object mutex = new Object();
 
-    public BlockingQueue(int capacity, int blockSize) {
-        this.blockSize = blockSize;
+    /**
+     * Constructs a BlockingQueue with specified capacity and chunk size
+     * @param capacity how many elements the queue can hold at maximum
+     * @param chunkSize the size of the elements (or chunks) in the queue
+     */
+    public BlockingQueue(int capacity, int chunkSize) {
+        this.chunkSize = chunkSize;
         this.capacity = capacity;
-        this.array = new double[blockSize * capacity];
+        this.array = new double[chunkSize * capacity];
     }
 
     @Override
     public boolean offer(double[] data) {
-        if (data.length != blockSize) throw new IllegalArgumentException("data length "+data.length+" must equal block size "+blockSize);
+        if (data.length != chunkSize) throw new IllegalArgumentException("data length "+data.length+" must equal chunk size "+ chunkSize);
         synchronized (mutex) {
             if (!hasSpace) return false;
-            System.arraycopy(data, 0, array, tail * blockSize, blockSize);
+            System.arraycopy(data, 0, array, tail * chunkSize, chunkSize);
             tail = (tail + 1) % capacity;
             if (tail == head) hasSpace = false;
             return true;
@@ -33,8 +38,8 @@ public class BlockingQueue implements ChunkQueue {
     public double[] poll() {
         synchronized (mutex) {
             if (head == tail && hasSpace) return null;
-            double[] result = new double[blockSize];
-            System.arraycopy(array, head * blockSize, result, 0, blockSize);
+            double[] result = new double[chunkSize];
+            System.arraycopy(array, head * chunkSize, result, 0, chunkSize);
             head = (head + 1) % capacity;
             hasSpace = true;
             return result;
@@ -68,14 +73,14 @@ public class BlockingQueue implements ChunkQueue {
         int left = n;
         synchronized (mutex) {
             if (tail >= head && hasSpace) {
-                int available = blockSize * (tail - head);
+                int available = chunkSize * (tail - head);
                 int size = available < n ? available : n;
-                System.arraycopy(array, blockSize * head, result, 0, size);
+                System.arraycopy(array, chunkSize * head, result, 0, size);
             } else {
-                int length1 = blockSize * (capacity - head);
+                int length1 = chunkSize * (capacity - head);
                 length1 = length1 < n ? length1 : n;
-                int length2 = blockSize * tail;
-                length2 = (length1 + length2) < n ? (tail * blockSize) : (n - length1);
+                int length2 = chunkSize * tail;
+                length2 = (length1 + length2) < n ? (tail * chunkSize) : (n - length1);
                 System.arraycopy(array, head, result, 0, length1);
                 System.arraycopy(array, 0, result, length1, length2);
             }
