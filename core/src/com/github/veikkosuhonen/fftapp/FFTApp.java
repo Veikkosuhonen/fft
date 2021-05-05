@@ -13,6 +13,7 @@ import com.github.veikkosuhonen.fftapp.fft.dft.OptimizedInPlaceFFT;
 import com.github.veikkosuhonen.fftapp.fft.utils.ArrayUtils;
 import com.github.veikkosuhonen.fftapp.fft.utils.BlockingQueue;
 import com.github.veikkosuhonen.fftapp.fft.utils.ChunkQueue;
+import com.github.veikkosuhonen.fftapp.fft.utils.ReferenceChunkQueue;
 import com.github.veikkosuhonen.fftapp.fft.windowing.Hann;
 
 import java.util.Queue;
@@ -67,7 +68,7 @@ public class FFTApp extends ApplicationAdapter {
 		initializeGraphics();
 		createPixmapTexture();
 
-		queue = new BlockingQueue(QUEUE_LENGTH, CHUNK_SIZE);
+		queue = new ReferenceChunkQueue(QUEUE_LENGTH, CHUNK_SIZE);
 
 		processor = new DCTProcessor(
 				new DFTDCT(new OptimizedInPlaceFFT()),

@@ -49,7 +49,7 @@ public class DCTProcessor {
 
         // Remove (pollRate) chunks from the queue.
         // pollRate should be approximately the rate (per render frame) at which the audio thread adds chunks to the queue.
-        for (int j = 0; j < pollRate; j++) queue.drop(1);
+        queue.drop(pollRate);
 
         return new double[][] { dct.process(dataL), dct.process(dataR) };
     }
