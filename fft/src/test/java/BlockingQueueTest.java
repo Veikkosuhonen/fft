@@ -14,7 +14,7 @@ public class BlockingQueueTest {
         queue = new BlockingQueue(4, 2);
     }
 
-    @Test
+    //@Test
     public void test() {
         queue.offer(new double[]{1, 1});
         queue.offer(new double[]{2, 2});

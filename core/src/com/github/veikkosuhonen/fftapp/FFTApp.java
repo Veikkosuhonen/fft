@@ -8,6 +8,7 @@ import com.github.veikkosuhonen.fftapp.audio.AudioFile;
 import com.github.veikkosuhonen.fftapp.audio.DCTProcessor;
 import com.github.veikkosuhonen.fftapp.audio.SoundPlayer;
 import com.github.veikkosuhonen.fftapp.fft.dct.DFTDCT;
+import com.github.veikkosuhonen.fftapp.fft.dct.FastDCT;
 import com.github.veikkosuhonen.fftapp.fft.dft.OptimizedInPlaceFFT;
 import com.github.veikkosuhonen.fftapp.fft.utils.ArrayUtils;
 import com.github.veikkosuhonen.fftapp.fft.utils.ChunkQueue;
@@ -28,7 +29,7 @@ public class FFTApp extends ApplicationAdapter {
 	/*
 	* Max capacity of the queue in chunks. Determines latency of the visualization alongside CHUNK_SIZE.
 	*/
-	final int QUEUE_LENGTH = 240;
+	final int QUEUE_LENGTH = 360;
 
 	/*
 	* How many chunks in a window. There's a frequency and temporal resolution tradeoff: larger value allows higher
@@ -76,7 +77,7 @@ public class FFTApp extends ApplicationAdapter {
 
 	ShaderProgram shader;
 	Mesh mesh;
-	long startTime;
+
 
 	/**
 	 * Called when GDX application starts
@@ -93,7 +94,7 @@ public class FFTApp extends ApplicationAdapter {
 		queue = new ReferenceChunkQueue(QUEUE_LENGTH, CHUNK_SIZE);
 
 		processor = new DCTProcessor(
-				new DFTDCT(new OptimizedInPlaceFFT()),
+				new FastDCT(),
 				CHUNK_SIZE,
 				WINDOW,
 				FPS,
@@ -107,44 +108,47 @@ public class FFTApp extends ApplicationAdapter {
 				queue
 		);
 		player.start();
-
-		startTime = System.currentTimeMillis();
 	}
+
 
 	/**
 	 * Called each frame
 	 */
 	@Override
 	public void render() {
-		long time = System.currentTimeMillis();
 
 		gl.glClearColor(0, 0, 0, 1);
 		gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		double[][] data = processor.getLeftRightDCT();
 
-		float[] dataL = processFrequencyData(data[0]);
+		//float[] dataL = processFrequencyData(data[0]);
 		float[] dataR = processFrequencyData(data[1]);
-		float[] dataLR = ArrayUtils.join(dataL, dataR);
-		//System.out.println(queue.remainingCapacity());
+		//float[] dataLR = ArrayUtils.join(dataL, dataR);
+
 		updatePixmap(dataR);
+
 		shader.bind();
-		//shader.setUniformf("u_time", (time - startTime) * 1f / 1000);
-		//shader.setUniform1fv("u_freq", dataLR, 0, SPECTRUM_LENGTH * 2);
 		shader.setUniformf("u_resolution", graphics.getWidth(), graphics.getHeight());
 		shader.setUniformi("spectrogram", 0);
+
 		mesh.render(shader, GL20.GL_TRIANGLES);
 	}
-	
+
+
 	@Override
 	public void dispose() {
 		shader.dispose();
 		mesh.dispose();
+		player.dispose();
 	}
 
+
 	/**
+	 * Prepares the data for rendering by slicing, converting to float and absolute values, applying smoothing,
+	 * and normalization.
 	 * @param data
-	 * @return Preprocessed frequency spectrum ready to be sent to shader
+	 * @return preprocessed data
 	 */
 	private float[] processFrequencyData(double[] data) {
 		if (data.length < SPECTRUM_LENGTH) {
@@ -169,6 +173,7 @@ public class FFTApp extends ApplicationAdapter {
 		return ArrayUtils.scale(result, 0, avgMax / normalizeFactor, 0, 1);
 	}
 
+
 	/**
 	 * Compile shader program and create the screen draw quad
 	 */
@@ -185,36 +190,47 @@ public class FFTApp extends ApplicationAdapter {
 		mesh.setIndices(new short[] {0, 1, 2, 2, 3, 0});
 	}
 
+
+	//Logic for drawing the frequency values into a texture and shifting the contents of the texture right each frame.
+	//Two pixmaps are needed and the contents are copied between them to shift the texture one pixel each frame.
 	Pixmap pixmap1;
 	Pixmap pixmap2;
 	Texture texture;
-	int w = 256;
-	int h = SPECTRUM_LENGTH;
 
+	final int width = 256;
+	final int height = SPECTRUM_LENGTH;
+
+	/**
+	 * Updates the texture each frame with new data and shifts the contents right.
+	 * @param data
+	 */
 	private void updatePixmap(float[] data) {
-		Pixmap p1;
-		Pixmap p2;
+		Pixmap read;
+		Pixmap write;
 		if (graphics.getFrameId() % 2 == 0) {
-			p1 = pixmap1;
-			p2 = pixmap2;
+			read = pixmap1;
+			write = pixmap2;
 		} else {
-			p1 = pixmap2;
-			p2 = pixmap1;
+			read = pixmap2;
+			write = pixmap1;
 		}
-
-		p1.drawPixmap(p2, 0, 0, w - 1, h, 1, 0, w - 1, h);
-		p2.setColor(Color.BLACK);
-		p2.fill();
+		//Draw contents of read to write, shifted by one pixel to the right
+		write.drawPixmap(read, 0, 0, width - 1, height, 1, 0, width - 1, height);
+		//Draw new data into the left edge of write
 		for (int i = 0; i < SPECTRUM_LENGTH; i++) {
-			p1.drawPixel(0, i, Color.rgba8888(data[i], 0f, 0f, 1f));
+			write.drawPixel(0, i, Color.rgba8888(data[i], 0f, 0f, 1f));
 		}
-		texture.draw(p1, 0, 0);
+		//Upload the updated pixmap to the texture
+		texture.draw(write, 0, 0);
 		texture.bind(0);
 	}
 
+	/**
+	 * Initialize pixmaps and texture
+	 */
 	private void createPixmapTexture() {
-		pixmap1 = new Pixmap(w, h, Pixmap.Format.RGBA8888);
-		pixmap2 = new Pixmap(w, h, Pixmap.Format.RGBA8888);
-		texture = new Texture(w, h, Pixmap.Format.RGBA8888);
+		pixmap1 = new Pixmap(width, height, Pixmap.Format.RGBA8888);
+		pixmap2 = new Pixmap(width, height, Pixmap.Format.RGBA8888);
+		texture = new Texture(width, height, Pixmap.Format.RGBA8888);
 	}
 }

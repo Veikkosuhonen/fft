@@ -1,5 +1,8 @@
 package com.github.veikkosuhonen.fftapp.fft.utils;
 
+/**
+ * Contains static array modification and aggregation methods
+ */
 public class ArrayUtils {
 
     /**
@@ -217,6 +220,11 @@ public class ArrayUtils {
         return arr;
     }
 
+    /**
+     * Finds and returns the maximum value of an array
+     * @param arr the input array
+     * @return maximum value in the array
+     */
     public static float max(float[] arr) {
         float max = Float.MIN_VALUE;
         for (int i = 0; i < arr.length; i++) {

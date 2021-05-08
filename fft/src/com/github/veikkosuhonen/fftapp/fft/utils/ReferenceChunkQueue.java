@@ -3,6 +3,9 @@ package com.github.veikkosuhonen.fftapp.fft.utils;
 import java.util.Iterator;
 import java.util.concurrent.ArrayBlockingQueue;
 
+/**
+ * Implements the ChunkQueue interface using a Java ArrayBlockingQueue
+ */
 public class ReferenceChunkQueue implements ChunkQueue {
 
     private ArrayBlockingQueue<double[]> queue;
@@ -33,11 +36,10 @@ public class ReferenceChunkQueue implements ChunkQueue {
 
     @Override
     public boolean drop(int n) {
-        boolean success = true;
         for (int i = 0; i < n; i++)
             if (queue.poll() == null)
-                success = false;
-        return success;
+                return false;
+        return true;
     }
 
     @Override

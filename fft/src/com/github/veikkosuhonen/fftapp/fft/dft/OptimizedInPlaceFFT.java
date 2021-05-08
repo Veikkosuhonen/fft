@@ -1,7 +1,5 @@
 package com.github.veikkosuhonen.fftapp.fft.dft;
 
-import java.util.Arrays;
-
 public class OptimizedInPlaceFFT extends DFT {
 
     private int[] bitReversalPermutation;
@@ -59,9 +57,9 @@ public class OptimizedInPlaceFFT extends DFT {
         }
         double wR, wI;
         int k = 0; // index counter for the roots of unity array
-        for (int len = 2; len <= n; len <<= 1) {
-            for (int i = 0; i < n; i += len) {
-                for (int j = 0; j < len / 2; j++) {
+        for (int size = 2; size <= n; size *= 2) {
+            for (int i = 0; i < n; i += size) {
+                for (int j = 0; j < size / 2; j++) {
                     wR = rootOfUnityR[k];
                     wI = rootOfUnityI[k];
                     k++;
@@ -69,8 +67,8 @@ public class OptimizedInPlaceFFT extends DFT {
                     double uR = real[i + j];
                     double uI = img[i + j];
                     // Complex v
-                    double vR = real[i + j + len / 2];
-                    double vI = img[i + j + len / 2];
+                    double vR = real[i + j + size / 2];
+                    double vI = img[i + j + size / 2];
                     // v = v * w
                     double vR0 = vR * wR - vI * wI; // These written out complex multiplications are easy to mess up
                     vI = vR * wI + vI * wR;
@@ -79,8 +77,8 @@ public class OptimizedInPlaceFFT extends DFT {
                     real[i + j] = uR + vR;
                     img[i + j] = uI + vI;
                     // arr[i + j + len / 2] = u - v
-                    real[i + j + len / 2] = uR - vR;
-                    img[i + j + len / 2] = uI - vI;
+                    real[i + j + size / 2] = uR - vR;
+                    img[i + j + size / 2] = uI - vI;
                 }
             }
         }

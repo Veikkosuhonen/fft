@@ -19,6 +19,7 @@ public class SoundPlayer {
     private ChunkQueue queue;
     private int chunkSize;
     private byte[] audioBytes;
+    private Thread audioThread;
 
     public SoundPlayer(File audioFile, int chunkSize, boolean useMicrophone, ChunkQueue queue) {
         this.audioFile = audioFile;
@@ -33,7 +34,7 @@ public class SoundPlayer {
      * by the audio system.
      */
     public void start() {
-        new Thread(() -> {
+        audioThread = new Thread(() -> {
             AudioFormat format;
             DataLine.Info info;
             TargetDataLine microphone = null;
@@ -91,7 +92,8 @@ public class SoundPlayer {
             }
             sourceLine.stop();
             sourceLine.close();
-        }).start();
+        });
+        audioThread.start();
     }
 
     /**
@@ -109,5 +111,12 @@ public class SoundPlayer {
         } else {
             Logger.getAnonymousLogger().warning("Cannot control volume, audio may be loud.");
         }
+    }
+
+    /**
+     * Interrupts the audio thread
+     */
+    public void dispose() {
+        audioThread.interrupt();
     }
 }
