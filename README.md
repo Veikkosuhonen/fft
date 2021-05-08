@@ -6,8 +6,6 @@ The DFT implementations and tests are contained in the `fft` module. This is the
 The desktop application is built on the [LibGDX game framework](https://libgdx.com/) to render the frequency spectrogram of audio in real time. 
 The implementation is in the `core` module.
 
-
-
 ## Docs
 
 [User guide](https://github.com/Veikkosuhonen/fft/blob/main/docs/user_guide.md)
@@ -27,6 +25,8 @@ The implementation is in the `core` module.
 [week 3](https://github.com/Veikkosuhonen/fft/blob/main/docs/week3.md)
 
 [week 5](https://github.com/Veikkosuhonen/fft/blob/main/docs/week5.md)
+
+[week 6](https://github.com/Veikkosuhonen/fft/blob/main/docs/week6.md)
 
 ## Gradle
 
