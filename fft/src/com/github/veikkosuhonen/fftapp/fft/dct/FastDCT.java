@@ -30,7 +30,8 @@ public class FastDCT extends DCT {
         if (len == 8) {
             dct8(data, offset);
             return;
-        }
+        } else if (len == 1) return;
+
         int halfLen = len / 2;
 
         for (int i = 0; i < halfLen; i++) {

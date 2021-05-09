@@ -28,7 +28,7 @@ public class DFTDCT extends DCT {
     public double[] process(double[] signal) {
         int n = signal.length;
         super.validateInput(n);
-        computeTrigonometricTables(n, false);
+        computeTrigonometricTables(n);
         /* Reorder the input data into a new array.
         For the DCT algorithm to work correctly, the even positions are set to the first half of the array
         and uneven to the second half of the array in reverse order */
@@ -51,8 +51,8 @@ public class DFTDCT extends DCT {
         return real;
     }
 
-    private void computeTrigonometricTables(int n, boolean recompute) {
-        if (cosineTable != null && cosineTable.length == n && !recompute) {
+    private void computeTrigonometricTables(int n) {
+        if (cosineTable != null && cosineTable.length == n) {
             return;
         }
         cosineTable = new double[n];

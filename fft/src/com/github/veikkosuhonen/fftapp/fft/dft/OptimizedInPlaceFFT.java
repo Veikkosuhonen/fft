@@ -12,9 +12,9 @@ public class OptimizedInPlaceFFT extends DFT {
     }
 
     /**
-     * Uses the same algorithm as InPlaceFFT but without Complex objects, avoiding O(n) object creation operations
+     * Uses the same algorithm as InPlaceFFT but without Complex objects, avoiding {@code O(n)} object creation operations
      * @param dataRI the input signal
-     * @param normalize whether to normalize (divide by n) the data
+     * @param normalize whether to normalize (divide by {@code n}) the data
      * @return the calculated DFT
      */
     @Override
@@ -85,9 +85,9 @@ public class OptimizedInPlaceFFT extends DFT {
     }
     
     /**
-     * Optimization: precompute the roots of unity for the rearranged input array of size n.
-     * There are n/2 * log2(n) of those, for each operation in the triple for loop in the algorithm.
-     * Is stored for subsequent calls if n remains the same.
+     * Optimization: precompute the roots of unity for the rearranged input array of size {@code n}.
+     * There are {@code n/2 * log2(n)} of those, for each operation in the triple for loop in the algorithm.
+     * Is stored for subsequent calls if {@code n} remains the same.
      * @param n
      */
     private void precomputeRootsOfUnity(int n) {
@@ -123,7 +123,7 @@ public class OptimizedInPlaceFFT extends DFT {
 
     /**
      * Optimization: precompute the bit reversal permutation of size n array. Used in rearranging the input array.
-     * Is stored for subsequent calls if n remains the same.
+     * Is stored for subsequent calls if {@code n} remains the same.
      * @param n
      */
     private void precomputeBitReversalPermutation(int n) {
@@ -140,11 +140,11 @@ public class OptimizedInPlaceFFT extends DFT {
     }
 
     /**
-     * Reverses the last N bits of an integer.
+     * Reverses the last {@code N} bits of an integer.
      * <p>
-     * Example: a = 8 = 0b1... 00001000 and n = 5.
+     * Example: {@code a = 8 = 0b1... 00001000} and {@code n = 5}.
      * The 5 least significant bits will be reversed and the result will be
-     * 0b1... 00000010 = 2.
+     * {@code 0b1... 00000010 = 2}.
      * </p>
      *
      * @param a The integer whose bits are to be reversed
@@ -162,11 +162,11 @@ public class OptimizedInPlaceFFT extends DFT {
     }
 
     /**
-     * Calculates the ceiled integer value of log2(n),
-     * or the minimum number of bits needed to represent an integer with magnitude n.
+     * Calculates the ceiled integer value of {@code log2(n)},
+     * or the minimum number of bits needed to represent an integer with magnitude {@code n}.
      *
      * @param n The integer value
-     * @return The integer result of ceil(log2(n))
+     * @return The integer result of {@code ceil(log2(n))}
      */
     private int log2ceil(int n) {
         int log2 = 0;

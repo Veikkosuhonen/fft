@@ -3,7 +3,7 @@ package com.github.veikkosuhonen.fftapp.fft.dft;
 import com.github.veikkosuhonen.fftapp.fft.utils.Complex;
 
 /**
- * A naive implementation of the {@link DFT} with O(n^2) runtime
+ * A naive implementation of the {@link DFT} with {@code O(n^2)} runtime
  */
 public class NaiveDFT extends DFT {
 

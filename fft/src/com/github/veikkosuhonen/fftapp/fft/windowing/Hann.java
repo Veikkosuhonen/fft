@@ -8,7 +8,7 @@ public class Hann implements WindowFunction{
     private final int N;
 
     /**
-     * Constructs a new Hann window function instance with window size of N
+     * Constructs a new Hann window function instance with window size of {@code N}
      * @param N the size of the window
      */
     public Hann(int N) { this.N = N; }

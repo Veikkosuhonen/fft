@@ -4,7 +4,7 @@ import com.github.veikkosuhonen.fftapp.fft.utils.Complex;
 
 /**
  * The FFT or Fast Fourier Transform is an efficient implementation of the {@link DFT}
- * with a O(log(n)n) runtime. This particular implementation uses the
+ * with a {@code O(n * log(n)) runtime. This particular implementation uses the
  * <a href=https://en.wikipedia.org/wiki/Fast_Fourier_transform#Cooley%E2%80%93Tukey_algorithm>Cooley-Tukey algorithm</a>.
  * Based on code from <a href=https://cp-algorithms.com/algebra/fft.html>https://cp-algorithms.com/algebra/fft.html</a>
  */

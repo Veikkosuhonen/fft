@@ -80,11 +80,11 @@ public class InPlaceFFT extends DFT {
     }
 
     /**
-     * Reverses the last <code>N</code> bits of an integer.
+     * Reverses the last {@code N} bits of an integer.
      * <p>
-     * Example: <code>a = 8 = 0b1... 00001000</code> and <code>n = 5</code>.
+     * Example: {@code a = 8 = 0b1... 00001000} and {@code n = 5}.
      * The 5 least significant bits will be reversed and the result will be
-     * <code>0b1... 00000010 = 2</code>.
+     * {@code 0b1... 00000010 = 2}.
      * </p>
      *
      * @param a The integer whose bits are to be reversed
@@ -102,11 +102,11 @@ public class InPlaceFFT extends DFT {
     }
 
     /**
-     * Calculates the ceiled integer value of <code>log2(n)</code>,
-     * or the minimum number of bits needed to represent an integer with magnitude <code>n</code>.
+     * Calculates the ceiled integer value of {@code log2(n)},
+     * or the minimum number of bits needed to represent an integer with magnitude {@code n}.
      *
      * @param n The integer value
-     * @return The integer result of <code>ceil(log2(n))</code>
+     * @return The integer result of {@code ceil(log2(n))}
      */
     private int log2ceil(int n) {
         int log2 = 0;

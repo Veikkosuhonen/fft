@@ -9,6 +9,7 @@ import com.github.veikkosuhonen.fftapp.audio.DCTProcessor;
 import com.github.veikkosuhonen.fftapp.audio.SoundPlayer;
 import com.github.veikkosuhonen.fftapp.fft.dct.DFTDCT;
 import com.github.veikkosuhonen.fftapp.fft.dct.FastDCT;
+import com.github.veikkosuhonen.fftapp.fft.dct.RealOnlyDFT;
 import com.github.veikkosuhonen.fftapp.fft.dft.OptimizedInPlaceFFT;
 import com.github.veikkosuhonen.fftapp.fft.utils.ArrayUtils;
 import com.github.veikkosuhonen.fftapp.fft.utils.ChunkQueue;
@@ -94,7 +95,7 @@ public class FFTApp extends ApplicationAdapter {
 		queue = new ReferenceChunkQueue(QUEUE_LENGTH, CHUNK_SIZE);
 
 		processor = new DCTProcessor(
-				new FastDCT(),
+				new DFTDCT(new OptimizedInPlaceFFT()),
 				CHUNK_SIZE,
 				WINDOW,
 				FPS,
