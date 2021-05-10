@@ -1,17 +1,16 @@
-import com.github.veikkosuhonen.fftapp.fft.utils.BlockingQueue;
+import com.github.veikkosuhonen.fftapp.fft.utils.CustomChunkQueue;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Test;
 
 import java.util.Arrays;
 
-public class BlockingQueueTest {
+public class CustomChunkQueueTest {
 
-    BlockingQueue queue;
+    CustomChunkQueue queue;
 
     @Before
     public void init() {
-        queue = new BlockingQueue(4, 2);
+        queue = new CustomChunkQueue(4, 2);
     }
 
     //@Test

@@ -86,12 +86,19 @@ project(":fft") {
     }
     jacocoTestReport {
         dependsOn test
-    }
-    jacocoTestReport {
+
         reports {
             xml.enabled false
             csv.enabled false
             html.destination file("${buildDir}/jacocoHtml")
+        }
+
+        // Jacoco directories
+        afterEvaluate {
+            classDirectories.setFrom(files(classDirectories.files.collect {
+                fileTree(dir: it,
+                        includes: ['com/github/veikkosuhonen/fftapp/fft/**'])
+            }))
         }
     }
 

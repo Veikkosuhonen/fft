@@ -16,10 +16,10 @@ public class BenchmarkSuite {
     public static void main(String[] args) {
         System.out.println("############### Starting benchmark ##############");
 
-        int trials = 150; // how many trials to run
-        int warmup = 75; // how many warmup runs to do
-        int sizes = 8; // how many (power of two) sizes of samples to do
-        int startAt = 8; // smallest (power of two) sample size
+        int trials = 100; // how many trials to run
+        int warmup = 50; // how many warmup runs to do
+        int sizes = 4; // how many (power of two) sizes of samples to do
+        int startAt = 12; // smallest (power of two) sample size
         int[] sampleSizes = new int[sizes]; // For X-axis values
 
         double[] naiveDFTTime = new double[sizes];
@@ -28,10 +28,10 @@ public class BenchmarkSuite {
         double[] optimizedInPlaceFFTTime = new double[sizes];
         double[] referenceFFTTime = new double[sizes];
 
-        System.out.println("===== Testing DFT algorithms (" + (2 << startAt) + " to " + (2 << startAt + sizes) + " samples) ======");
+        System.out.println("===== Testing DFT algorithms (" + (2 << startAt) + " to " + (2 << startAt + sizes - 1) + " samples) ======");
         for (int i = 0; i < sizes; i++) {
             int samples = 2 << i + startAt;
-            naiveDFTTime[i] = samples > 512 ? 0 : benchmarkDFT(new NaiveDFT(), samples, trials, warmup); // skip naive implementation on large samples
+            naiveDFTTime[i] = samples > 1024 ? 0 : benchmarkDFT(new NaiveDFT(), samples, trials, warmup); // skip naive implementation on large samples
             fftTime[i] = benchmarkDFT(new FFT(), samples, trials, warmup);
             inPlaceFFTime[i] = benchmarkDFT(new InPlaceFFT(), samples, trials, warmup);
             optimizedInPlaceFFTTime[i] = benchmarkDFT(new OptimizedInPlaceFFT(), samples, trials, warmup);
@@ -53,10 +53,10 @@ public class BenchmarkSuite {
         double[] referenceDftDctTime = new double[sizes];
 
         System.out.println();
-        System.out.println("===== Testing DCT algorithms (" + (2 << startAt) + " to " + (2 << startAt + sizes) + " samples) ======");
+        System.out.println("===== Testing DCT algorithms (" + (2 << startAt) + " to " + (2 << startAt + sizes - 1) + " samples) ======");
         for (int i = 0; i < sizes; i++) {
             int samples = 2 << i + startAt;
-            naiveDCTTime[i] = samples > 512 ? 0 :benchmarkDCT(new NaiveDCT(), samples, trials, warmup); // skip naive implementation on large samples
+            naiveDCTTime[i] = samples > 1024 ? 0 :benchmarkDCT(new NaiveDCT(), samples, trials, warmup); // skip naive implementation on large samples
             fastDCTTime[i] = benchmarkDCT(new FastDCT(), samples, trials, warmup);
             dftDctTime[i] = benchmarkDCT(new DFTDCT(new OptimizedInPlaceFFT()), samples, trials, warmup);
             referenceDftDctTime[i] = benchmarkDCT(new DFTDCT(new ReferenceFFT()), samples, trials, warmup);

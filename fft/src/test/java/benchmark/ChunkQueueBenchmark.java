@@ -1,6 +1,6 @@
 package benchmark;
 
-import com.github.veikkosuhonen.fftapp.fft.utils.BlockingQueue;
+import com.github.veikkosuhonen.fftapp.fft.utils.CustomChunkQueue;
 import com.github.veikkosuhonen.fftapp.fft.utils.ChunkQueue;
 import com.github.veikkosuhonen.fftapp.fft.utils.ReferenceChunkQueue;
 
@@ -47,7 +47,7 @@ public class ChunkQueueBenchmark {
         // benchmark custom
         avgTime = 0L;
         for (int i = 0; i < TRIALS + WARMUP; i++) {
-            final ChunkQueue queue = new BlockingQueue(CAPACITY, CHUNK_SIZE);
+            final ChunkQueue queue = new CustomChunkQueue(CAPACITY, CHUNK_SIZE);
 
             producer = new Thread(() -> {
                 for (int j = 0; j < ITERS; j++) {

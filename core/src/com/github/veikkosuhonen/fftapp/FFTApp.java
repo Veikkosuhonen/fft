@@ -4,17 +4,16 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+
 import com.github.veikkosuhonen.fftapp.audio.AudioFile;
 import com.github.veikkosuhonen.fftapp.audio.DCTProcessor;
 import com.github.veikkosuhonen.fftapp.audio.SoundPlayer;
+
 import com.github.veikkosuhonen.fftapp.fft.dct.DFTDCT;
-import com.github.veikkosuhonen.fftapp.fft.dct.FastDCT;
-import com.github.veikkosuhonen.fftapp.fft.dct.RealOnlyDFT;
 import com.github.veikkosuhonen.fftapp.fft.dft.OptimizedInPlaceFFT;
 import com.github.veikkosuhonen.fftapp.fft.utils.ArrayUtils;
-import com.github.veikkosuhonen.fftapp.fft.utils.BlockingQueue;
+import com.github.veikkosuhonen.fftapp.fft.utils.CustomChunkQueue;
 import com.github.veikkosuhonen.fftapp.fft.utils.ChunkQueue;
-import com.github.veikkosuhonen.fftapp.fft.utils.ReferenceChunkQueue;
 
 import java.util.ArrayDeque;
 import java.util.Queue;
@@ -93,7 +92,7 @@ public class FFTApp extends ApplicationAdapter {
 		maxValue = new ArrayDeque<>(normalizeLag);
 		avgMax = 0.0f;
 
-		queue = new BlockingQueue(QUEUE_LENGTH, CHUNK_SIZE);
+		queue = new CustomChunkQueue(QUEUE_LENGTH, CHUNK_SIZE);
 
 		processor = new DCTProcessor(
 				new DFTDCT(new OptimizedInPlaceFFT()),

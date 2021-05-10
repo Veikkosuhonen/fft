@@ -1,4 +1,4 @@
-import com.github.veikkosuhonen.fftapp.fft.utils.BlockingQueue;
+import com.github.veikkosuhonen.fftapp.fft.utils.CustomChunkQueue;
 import com.github.veikkosuhonen.fftapp.fft.utils.ChunkQueue;
 import com.github.veikkosuhonen.fftapp.fft.utils.ReferenceChunkQueue;
 import org.junit.Assert;
@@ -20,7 +20,7 @@ public class ChunkQueueTest {
 
     @Test
     public void customChunkQueueSimpleOfferPollTest() {
-        ChunkQueue queue = new BlockingQueue(1, 2);
+        ChunkQueue queue = new CustomChunkQueue(1, 2);
         Assert.assertNull("Empty queue returns null on poll", queue.poll());
         Assert.assertTrue("Offer returns true when has capacity", queue.offer(chunk));
         Assert.assertFalse("Offer returns false when full", queue.offer(new double[2]));
@@ -44,7 +44,7 @@ public class ChunkQueueTest {
 
     @Test
     public void customSimpleCapacityTest() {
-        ChunkQueue queue = new BlockingQueue(2, 2);
+        ChunkQueue queue = new CustomChunkQueue(2, 2);
         Assert.assertEquals(2, queue.remainingCapacity());
         queue.offer(chunk);
         Assert.assertEquals(1, queue.remainingCapacity());
@@ -71,7 +71,7 @@ public class ChunkQueueTest {
 
     @Test
     public void customSimpleDropTest() {
-        ChunkQueue queue = new BlockingQueue(10, 2);
+        ChunkQueue queue = new CustomChunkQueue(10, 2);
         for (int i = 0; i < 10; i++) {
             queue.offer(chunk);
         }
@@ -95,7 +95,7 @@ public class ChunkQueueTest {
     @Test
     public void customSimpleWindowTest() {
         double[] window = new double[] {1, 2, 1, 2, 1};
-        ChunkQueue queue = new BlockingQueue(10, 2);
+        ChunkQueue queue = new CustomChunkQueue(10, 2);
         for (int i = 0; i < 10; i++) {
             queue.offer(chunk);
         }
@@ -134,7 +134,7 @@ public class ChunkQueueTest {
             chunks[i] = new double[] {i, 2 * i};
         }
 
-        ChunkQueue queue = new BlockingQueue(10, 2);
+        ChunkQueue queue = new CustomChunkQueue(10, 2);
         for (int i = 0; i < 20; i++) { // offer 20, first 10 return true
             Assert.assertEquals(i < 10, queue.offer(chunks[i]));
         }
@@ -167,7 +167,7 @@ public class ChunkQueueTest {
     @Test
     public void customComplexWindowTest() {
         double[] window = new double[] {4, 4, 5, 5, 6};
-        ChunkQueue queue = new BlockingQueue(6, 2);
+        ChunkQueue queue = new CustomChunkQueue(6, 2);
         for (int i = 0; i < 6; i++) {
             queue.offer(new double[]{i, i});
         }

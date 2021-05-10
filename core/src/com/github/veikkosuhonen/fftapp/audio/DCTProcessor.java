@@ -1,13 +1,9 @@
 package com.github.veikkosuhonen.fftapp.audio;
 
 import com.github.veikkosuhonen.fftapp.fft.dct.DCT;
-import com.github.veikkosuhonen.fftapp.fft.utils.BlockingQueue;
 import com.github.veikkosuhonen.fftapp.fft.utils.ChunkQueue;
 import com.github.veikkosuhonen.fftapp.fft.windowing.Hann;
 import com.github.veikkosuhonen.fftapp.fft.windowing.WindowFunction;
-
-import java.util.Iterator;
-import java.util.Queue;
 
 public class DCTProcessor {
 

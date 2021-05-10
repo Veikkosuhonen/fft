@@ -1,11 +1,9 @@
 package com.github.veikkosuhonen.fftapp.audio;
 
-import com.github.veikkosuhonen.fftapp.fft.utils.BlockingQueue;
 import com.github.veikkosuhonen.fftapp.fft.utils.ChunkQueue;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Queue;
 import java.util.logging.Logger;
 
 import javax.sound.sampled.*;
@@ -34,65 +32,83 @@ public class SoundPlayer {
      * by the audio system.
      */
     public void start() {
-        audioThread = new Thread(() -> {
+
+        audioThread = new Thread() {
             AudioFormat format;
             DataLine.Info info;
             TargetDataLine microphone = null;
             AudioInputStream stream = null;
-            // Query and open input stream for audio file or targetdataline for microphone
-            try {
-                if (useMicrophone) {
-                    format = new AudioFormat(44100.0f, 16, 2, true, true);
-                    info = new DataLine.Info(TargetDataLine.class, format);
-                    microphone = (TargetDataLine) AudioSystem.getLine(info);
-                    microphone.open(format);
-                    microphone.start();
-                } else {
-                    stream = AudioSystem.getAudioInputStream(audioFile);
-                    format = stream.getFormat();
-                }
-            } catch (UnsupportedAudioFileException | IOException | LineUnavailableException uafe) {
-                uafe.printStackTrace();
-                return;
-            }
-            // Open a sourceline for output
-            info = new DataLine.Info(SourceDataLine.class, format);
-            final SourceDataLine sourceLine;
-            try {
-                sourceLine = (SourceDataLine) AudioSystem.getLine(info);
-                sourceLine.open();
-            } catch (LineUnavailableException lue) {
-                lue.printStackTrace();
-                return;
-            }
-            setMasterGain(sourceLine);
 
-            // Start reading in data
-            int bytesPerFrame = format.getFrameSize();
-            int numBytes = 1024 * bytesPerFrame;
-            audioBytes = new byte[numBytes];
-            int bytesRead;
-            try {
-                sourceLine.start();
-                do {
-                    bytesRead = useMicrophone ? microphone.read(audioBytes, 0, numBytes) : stream.read(audioBytes, 0, numBytes);
-                    double[] chunk = new double[chunkSize];
-                    for (int i = 1; i < bytesRead / 2 && i < numBytes / 2; i++) {
-                        chunk[i % chunkSize] = audioBytes[2 * i - 1];
-                        if (i % chunkSize == chunkSize - 1) {
-                            queue.offer(chunk);
-                            chunk = new double[chunkSize];
-                        }
+            @Override
+            public void run() {
+                // Query and open input stream for audio file or targetdataline for microphone
+                try {
+                    if (useMicrophone) {
+                        format = new AudioFormat(44100.0f, 16, 2, true, true);
+                        info = new DataLine.Info(TargetDataLine.class, format);
+                        microphone = (TargetDataLine) AudioSystem.getLine(info);
+                        microphone.open(format);
+                        microphone.start();
+                    } else {
+                        stream = AudioSystem.getAudioInputStream(audioFile);
+                        format = stream.getFormat();
                     }
-                    sourceLine.write(audioBytes, 0, bytesRead);
-                } while (bytesRead != -1);
-            } catch (IOException ioe) {
-                ioe.printStackTrace();
-                return;
+                } catch (UnsupportedAudioFileException | IOException | LineUnavailableException uafe) {
+                    uafe.printStackTrace();
+                    return;
+                }
+                // Open a sourceline for output
+                info = new DataLine.Info(SourceDataLine.class, format);
+                final SourceDataLine sourceLine;
+                try {
+                    sourceLine = (SourceDataLine) AudioSystem.getLine(info);
+                    sourceLine.open();
+                } catch (LineUnavailableException lue) {
+                    lue.printStackTrace();
+                    return;
+                }
+                setMasterGain(sourceLine);
+
+                // Start reading in data
+                int bytesPerFrame = format.getFrameSize();
+                int numBytes = 1024 * bytesPerFrame;
+                audioBytes = new byte[numBytes];
+                int bytesRead;
+                try {
+                    sourceLine.start();
+                    do {
+                        bytesRead = useMicrophone ? microphone.read(audioBytes, 0, numBytes) : stream.read(audioBytes, 0, numBytes);
+                        double[] chunk = new double[chunkSize];
+                        for (int i = 1; i < bytesRead / 2 && i < numBytes / 2; i++) {
+                            chunk[i % chunkSize] = audioBytes[2 * i - 1];
+                            if (i % chunkSize == chunkSize - 1) {
+                                queue.offer(chunk);
+                                chunk = new double[chunkSize];
+                            }
+                        }
+                        sourceLine.write(audioBytes, 0, bytesRead);
+                    } while (bytesRead != -1);
+                } catch (IOException ioe) {
+                    ioe.printStackTrace();
+                    return;
+                }
+                sourceLine.stop();
+                sourceLine.close();
             }
-            sourceLine.stop();
-            sourceLine.close();
-        });
+
+            @Override
+            public void interrupt() {
+                if (microphone != null)
+                    microphone.close();
+                if (stream != null) {
+                    try {
+                        stream.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        };
         audioThread.start();
     }
 

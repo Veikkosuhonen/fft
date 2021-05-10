@@ -1,6 +1,6 @@
 package com.github.veikkosuhonen.fftapp.fft.utils;
 
-public class BlockingQueue implements ChunkQueue {
+public class CustomChunkQueue implements ChunkQueue {
 
     private final int chunkSize;
     private final int capacity;
@@ -16,7 +16,7 @@ public class BlockingQueue implements ChunkQueue {
      * @param capacity how many elements the queue can hold at maximum
      * @param chunkSize the size of the elements (or chunks) in the queue
      */
-    public BlockingQueue(int capacity, int chunkSize) {
+    public CustomChunkQueue(int capacity, int chunkSize) {
         this.chunkSize = chunkSize;
         this.capacity = capacity;
         this.array = new double[chunkSize * capacity];
