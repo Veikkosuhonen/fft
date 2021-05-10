@@ -50,7 +50,7 @@ public class BlockingQueue implements ChunkQueue {
     public boolean drop(int n) {
         synchronized (mutex) {
             if (head == tail && hasSpace) return false;
-            head = (head + 1) % capacity;
+            head = (head + n) % capacity;
             hasSpace = true;
             return true;
         }
@@ -70,19 +70,31 @@ public class BlockingQueue implements ChunkQueue {
     @Override
     public double[] getWindow(int n) {
         double[] result = new double[n];
-        int left = n;
+        if (remainingCapacity() == capacity) return result;
+
         synchronized (mutex) {
-            if (tail >= head && hasSpace) {
-                int available = chunkSize * (tail - head);
-                int size = available < n ? available : n;
-                System.arraycopy(array, chunkSize * head, result, 0, size);
+            // the queue can be located in one continuous section in the array, or two sections: the first section
+            // at the end of the array and the second section at the start.
+            if (tail > head) {
+                // one section
+                int available = (tail - head - 1) * chunkSize;
+                int length = n < available ? n : available;
+                System.arraycopy(array, head * chunkSize, result, 0, length);
             } else {
-                int length1 = chunkSize * (capacity - head);
-                length1 = length1 < n ? length1 : n;
-                int length2 = chunkSize * tail;
-                length2 = (length1 + length2) < n ? (tail * chunkSize) : (n - length1);
-                System.arraycopy(array, head, result, 0, length1);
-                System.arraycopy(array, 0, result, length1, length2);
+                // two sections
+                int available1 = (capacity - head) * chunkSize;
+                if (n <= available1) {
+                    // window fits in first section
+                    System.arraycopy(array, head * chunkSize, result, 0, n);
+                } else {
+                    // both sections needed for window
+                    int length1 = available1;
+                    System.arraycopy(array, head * chunkSize, result, 0, length1);
+                    int available2 = tail * chunkSize;
+                    int length2 = n - length1;
+                    length2 = length2 < available2 ? length2 : available2;
+                    System.arraycopy(array, 0, result, length1, length2);
+                }
             }
         }
         return result;

@@ -12,6 +12,7 @@ import com.github.veikkosuhonen.fftapp.fft.dct.FastDCT;
 import com.github.veikkosuhonen.fftapp.fft.dct.RealOnlyDFT;
 import com.github.veikkosuhonen.fftapp.fft.dft.OptimizedInPlaceFFT;
 import com.github.veikkosuhonen.fftapp.fft.utils.ArrayUtils;
+import com.github.veikkosuhonen.fftapp.fft.utils.BlockingQueue;
 import com.github.veikkosuhonen.fftapp.fft.utils.ChunkQueue;
 import com.github.veikkosuhonen.fftapp.fft.utils.ReferenceChunkQueue;
 
@@ -92,7 +93,7 @@ public class FFTApp extends ApplicationAdapter {
 		maxValue = new ArrayDeque<>(normalizeLag);
 		avgMax = 0.0f;
 
-		queue = new ReferenceChunkQueue(QUEUE_LENGTH, CHUNK_SIZE);
+		queue = new BlockingQueue(QUEUE_LENGTH, CHUNK_SIZE);
 
 		processor = new DCTProcessor(
 				new DFTDCT(new OptimizedInPlaceFFT()),
