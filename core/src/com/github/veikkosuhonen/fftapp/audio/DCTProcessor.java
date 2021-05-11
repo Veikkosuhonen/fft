@@ -3,6 +3,7 @@ package com.github.veikkosuhonen.fftapp.audio;
 import com.github.veikkosuhonen.fftapp.fft.dct.DCT;
 import com.github.veikkosuhonen.fftapp.fft.utils.ChunkQueue;
 import com.github.veikkosuhonen.fftapp.fft.windowing.Hann;
+import com.github.veikkosuhonen.fftapp.fft.windowing.Square;
 import com.github.veikkosuhonen.fftapp.fft.windowing.WindowFunction;
 
 public class DCTProcessor {
@@ -37,7 +38,7 @@ public class DCTProcessor {
         double[] dataL = new double[channelWindowSize];
         double[] dataR = new double[channelWindowSize];
 
-        for (int i = 0; i < channelWindowSize; i += 2) {
+        for (int i = 0; i < channelWindowSize; i += 1) {
             double coeff = windowFunction.getCoefficient(i);
             dataL[i] = dataWindow[i * 2] * coeff;
             dataR[i] = dataWindow[i * 2 + 1] * coeff;

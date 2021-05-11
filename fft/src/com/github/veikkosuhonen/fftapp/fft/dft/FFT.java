@@ -23,7 +23,9 @@ public class FFT extends DFT {
         double[][] dataRICopy = new double[2][dataRI[0].length];
         System.arraycopy(dataRI[0], 0, dataRICopy[0], 0, dataRI[0].length);
         System.arraycopy(dataRI[1], 0, dataRICopy[1], 0, dataRI[1].length);
+
         processInPlace(dataRICopy);
+
         if (normalize) {
             for (int i = 0; i < dataRI[0].length; i++) {
                 dataRICopy[0][i] /= dataRI[0].length;

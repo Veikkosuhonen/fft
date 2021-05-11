@@ -83,7 +83,7 @@ public class SoundPlayer {
                             chunk[i % chunkSize] = audioBytes[2 * i - 1];
                             if (i % chunkSize == chunkSize - 1) {
                                 queue.offer(chunk);
-                                chunk = new double[chunkSize];
+                                //chunk = new double[chunkSize];
                             }
                         }
                         sourceLine.write(audioBytes, 0, bytesRead);

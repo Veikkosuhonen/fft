@@ -23,7 +23,9 @@ public class ReferenceFFT extends DFT {
         double[][] dataRICopy = new double[2][n];
         System.arraycopy(dataRI[0], 0, dataRICopy[0], 0, n);
         System.arraycopy(dataRI[1], 0, dataRICopy[1], 0, n);
+
         FastFourierTransformer.transformInPlace(dataRICopy, DftNormalization.STANDARD, TransformType.FORWARD);
+
         if (normalize) {
             for (int i = 0; i < n; i++) {
                 dataRICopy[0][i] /= n;

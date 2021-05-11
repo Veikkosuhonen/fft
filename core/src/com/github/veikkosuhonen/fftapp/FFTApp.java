@@ -45,10 +45,9 @@ public class FFTApp extends ApplicationAdapter {
 	final int FPS = 60;
 
 	/*
-	* Length of the frequency spectrum (per channel) rendered. Must be less than 511.
-	* Should match BUFFER_SIZE constant in fragment shader.
+	* Length of the frequency spectrum (per channel) rendered.
 	*/
-	final int SPECTRUM_LENGTH = 512;
+	final int SPECTRUM_LENGTH = 683;
 
 
 	/**
