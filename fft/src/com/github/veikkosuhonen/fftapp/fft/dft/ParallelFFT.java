@@ -12,10 +12,11 @@ public class ParallelFFT extends DFT {
     private final ForkJoinPool executor;
     private double[] cosineTable;
     private double[] sineTable;
-    private int normalizeN;
+    private final int granularity;
 
     public ParallelFFT() {
         executor = ForkJoinPool.commonPool();
+        granularity = 1024;
     }
 
     /**
@@ -42,7 +43,6 @@ public class ParallelFFT extends DFT {
     public double[][] process(double[][] dataRI, boolean normalize) {
         super.validateInput(dataRI);
         int n = dataRI[0].length;
-        normalizeN = normalize ? n : 1;
         computeTrigonometricTable(n);
         // Make a copy of the original array, we don't want to modify it
         double[][] dataRICopy = new double[2][dataRI[0].length];
@@ -51,12 +51,6 @@ public class ParallelFFT extends DFT {
 
         executor.submit(getTask(dataRICopy));
         executor.awaitQuiescence(1, TimeUnit.SECONDS);
-        /*
-        try {
-            executor.awaitTermination(1, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }*/
 
         if (normalize) {
             for (int i = 0; i < dataRI[0].length; i++) {
@@ -67,6 +61,11 @@ public class ParallelFFT extends DFT {
         return dataRICopy;
     }
 
+    /**
+     * Creates a {@code RecursiveTask} for computing the sub-FFT on the specified data.
+     * @param dataRI data to operate on
+     * @return the compute task
+     */
     private RecursiveTask<Object> getTask(double[][] dataRI) {
         return new RecursiveTask<Object>() {
             @Override
@@ -84,7 +83,8 @@ public class ParallelFFT extends DFT {
                     dataRI1[1][i / 2] = dataRI[1][i + 1];
                 }
 
-                if (n > 1024) {
+                // Fork tasks larger than granularity
+                if (n > granularity) {
                     ForkJoinTask<Object> task1 = getTask(dataRI0).fork();
                     ForkJoinTask<Object> task2 = getTask(dataRI1).fork();
                     task1.join();

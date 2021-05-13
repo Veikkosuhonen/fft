@@ -5,8 +5,10 @@ import org.apache.commons.math3.transform.FastFourierTransformer;
 import org.apache.commons.math3.transform.TransformType;
 
 /**
- * Wraps the FastFourierTransform from Apache Commons math library for comparison purposes
+ * Wraps the FastFourierTransform from Apache Commons math library for comparison purposes. The implementation uses magic.
  * <a href=https://github.com/apache/commons-math/blob/master/src/main/java/org/apache/commons/math4/transform/FastFourierTransformer.java>source</a>
+ * A note from author, first time I read the source was 13/05 and the other FFT implementations in this project do not
+ * borrow anything from the reference implementation.
  */
 public class ReferenceFFT extends DFT {
 

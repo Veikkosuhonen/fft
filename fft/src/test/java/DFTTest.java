@@ -126,7 +126,7 @@ public class DFTTest {
     }
 
     @Test
-    public void testParallelFFT() {
+    public void testParallelFFTMatchesReference() {
         DFT fft = new ParallelFFT();
         DFT rfft = new ReferenceFFT();
 
@@ -138,6 +138,20 @@ public class DFTTest {
 
         Assert.assertArrayEquals("Real results close to reference", rFx[0], fx[0], MAX_ERROR);
         Assert.assertArrayEquals("Imaginary results close to reference", rFx[1], fx[1], MAX_ERROR);
+    }
+
+    @Test
+    public void testParallelFFTCorrectness() {
+        DFT dft = new ParallelFFT();
+
+        int n = 32;
+        double[][] signal = new double[][] {Signal.generateSineComposite(n, new double[]{3, 10, 28}), new double[n]};
+
+        double[][] fx = dft.process(signal);
+
+        Assert.assertEquals("Calculates freq 3", 0.5, fx[0][3], MAX_ERROR);
+        Assert.assertEquals("Calculates freq 10", 0.5, fx[0][10], MAX_ERROR);
+        Assert.assertEquals("Calculates freq 28", 0.5, fx[0][28], MAX_ERROR);
     }
 
     @Test

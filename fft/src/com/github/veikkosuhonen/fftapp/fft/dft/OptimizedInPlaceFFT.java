@@ -21,8 +21,8 @@ public class OptimizedInPlaceFFT extends DFT {
     public double[][] process(double[][] dataRI, boolean normalize) {
         super.validateInput(dataRI);
         int n = dataRI[0].length;
-        precomputeBitReversalPermutation(n);
-        precomputeRootsOfUnity(n);
+        computeBitReversalPermutation(n);
+        computeRootsOfUnity(n);
         // Make a copy of the original array, we don't want to modify it
         double[][] dataRICopy = new double[2][n];
         System.arraycopy(dataRI[0], 0, dataRICopy[0], 0, n);
@@ -97,7 +97,7 @@ public class OptimizedInPlaceFFT extends DFT {
      * Is stored for subsequent calls if {@code n} remains the same.
      * @param n
      */
-    private void precomputeRootsOfUnity(int n) {
+    private void computeRootsOfUnity(int n) {
         if (rootOfUnityR != null && rootOfUnityR.length == n) {
             return;
         }
@@ -133,7 +133,7 @@ public class OptimizedInPlaceFFT extends DFT {
      * an array of size {@code n}. No-op if the right sized permutation has already been computed and stored.
      * @param n the size of the array
      */
-    private void precomputeBitReversalPermutation(int n) {
+    private void computeBitReversalPermutation(int n) {
         if (bitReversalPermutation != null && bitReversalPermutation.length == n) {
             return;
         }
