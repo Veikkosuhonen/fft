@@ -7,6 +7,14 @@ import com.github.veikkosuhonen.fftapp.fft.utils.Complex;
  */
 public class NaiveDFT extends DFT {
 
+    /**
+     * Computes the DFT using the naive algorithm.
+     * @param dataRI    Signal for which to calculate the DFT.
+     *                  Must consist of two arrays of equal length, the first representing real values
+     *                  and the second representing imaginary values. The length of the arrays must be a power of two.
+     * @param normalize Whether to normalize the data
+     * @return a new array of two arrays with the real and imaginary results
+     */
     @Override
     public double[][] process(double[][] dataRI, boolean normalize) {
         super.validateInput(dataRI);
@@ -38,6 +46,13 @@ public class NaiveDFT extends DFT {
         return new double[][] {real, img};
     }
 
+    /**
+     * Computes the DFT using the naive algorithm.
+     * @param dataRI    Signal for which to calculate the DFT.
+     *                  Must consist of two arrays of equal length, the first representing real values
+     *                  and the second representing imaginary values. The length of the arrays must be a power of two.
+     * @return a new array of two arrays with the real and imaginary results
+     */
     @Override
     public double[][] process(double[][] dataRI) {
         return process(dataRI, true);

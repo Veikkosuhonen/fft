@@ -10,11 +10,26 @@ import com.github.veikkosuhonen.fftapp.fft.utils.Complex;
  */
 public class FFT extends DFT {
 
+    /**
+     * Calculates the DFT using the recursive FFT algorithm
+     * @param dataRI Signal for which to calculate the DFT.
+     *               Must consist of two arrays of equal length, the first representing real values
+     *               and the second representing imaginary values. The length of the arrays must be a power of two.
+     * @return real and imaginary array containing frequencies and phases
+     */
     @Override
     public double[][] process(double[][] dataRI) {
         return process(dataRI, true);
     }
 
+    /**
+     * Calculates the DFT using the recursive FFT algorithm
+     * @param dataRI Signal for which to calculate the DFT.
+     *               Must consist of two arrays of equal length, the first representing real values
+     *               and the second representing imaginary values. The length of the arrays must be a power of two.
+     * @param normalize whether to normalize the data (default true)
+     * @return real and imaginary array containing frequencies and phases
+     */
     @Override
     public double[][] process(double[][] dataRI, boolean normalize) {
         super.validateInput(dataRI);
@@ -35,6 +50,10 @@ public class FFT extends DFT {
         return dataRICopy;
     }
 
+    /**
+     * Recursively computes the DFT and writes the result to the input array
+     * @param dataRI real and imaginary input data
+     */
     private void processInPlace(double[][] dataRI) {
         int n = dataRI[0].length;
         if (n == 1) return; // Base case

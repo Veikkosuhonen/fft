@@ -30,7 +30,7 @@ public class DFTDCT extends DCT {
         super.validateInput(n);
         computeTrigonometricTables(n);
         /* Reorder the input data into a new array.
-        For the DCT algorithm to work correctly, the even positions are set to the first half of the array
+        The even positions are set to the first half of the array
         and uneven to the second half of the array in reverse order */
         double[] real = new double[n];
         for (int i = 0; i < n / 2; i++) {

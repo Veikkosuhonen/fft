@@ -2,8 +2,16 @@ package com.github.veikkosuhonen.fftapp.fft.dft;
 
 import com.github.veikkosuhonen.fftapp.fft.utils.Complex;
 
+/**
+ * Another FFT variant based on the
+ * <a href=https://en.wikipedia.org/wiki/Fast_Fourier_transform#Cooley%E2%80%93Tukey_algorithm>Cooley-Tukey algorithm</a>
+ * but without recursion
+ */
 public class InPlaceFFT extends DFT {
 
+    /**
+     * Stores the bit reversal permutation to be used in subsequent calls with the same input size
+     */
     private int[] bitReversalPermutation;
 
     @Override
@@ -67,6 +75,11 @@ public class InPlaceFFT extends DFT {
         }
     }
 
+    /**
+     * Computes the <a href=https://en.wikipedia.org/wiki/Bit-reversal_permutation>bit reversal permutation</a> for
+     * an array of size {@code n}. No-op if the right sized permutation has already been computed and stored.
+     * @param n the size of the array
+     */
     private void calculateBitReversalPermutation(int n) {
         if (bitReversalPermutation != null && bitReversalPermutation.length == n) {
             return;

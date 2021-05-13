@@ -55,7 +55,9 @@ public class FastDCT extends DCT {
 
 
     /**
-     * From https://www.nayuki.io/res/fast-discrete-cosine-transform-algorithms/FastDct8.java. Slightly modified to fit.
+     * From https://www.nayuki.io/res/fast-discrete-cosine-transform-algorithms/FastDct8.java.
+     * Adapted for the above method
+     *
      * Computes the scaled DCT type II on the specified length-8 array in place.
      * @param vector the full data vector of numbers to transform
      * @param o the offset of the position to transform

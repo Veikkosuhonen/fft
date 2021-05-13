@@ -27,7 +27,9 @@ public class OptimizedInPlaceFFT extends DFT {
         double[][] dataRICopy = new double[2][n];
         System.arraycopy(dataRI[0], 0, dataRICopy[0], 0, n);
         System.arraycopy(dataRI[1], 0, dataRICopy[1], 0, n);
+
         processInPlace(dataRICopy);
+
         if (normalize) {
             for (int i = 0; i < dataRI[0].length; i++) {
                 dataRICopy[0][i] /= n;
@@ -37,6 +39,10 @@ public class OptimizedInPlaceFFT extends DFT {
         return dataRICopy;
     }
 
+    /**
+     * Computes the DFT in-place and stores the result in the input array
+     * @param dataRI input data with real and imaginary arrays
+     */
     private void processInPlace(double[][] dataRI) {
         double[] real = dataRI[0];
         double[] img = dataRI[1];
@@ -55,6 +61,7 @@ public class OptimizedInPlaceFFT extends DFT {
                 img[k] = tempI;
             }
         }
+
         double wR, wI;
         int k = 0; // index counter for the roots of unity array
         for (int size = 2; size <= n; size *= 2) {
@@ -122,9 +129,9 @@ public class OptimizedInPlaceFFT extends DFT {
     }
 
     /**
-     * Optimization: precompute the bit reversal permutation of size n array. Used in rearranging the input array.
-     * Is stored for subsequent calls if {@code n} remains the same.
-     * @param n
+     * Computes the <a href=https://en.wikipedia.org/wiki/Bit-reversal_permutation>bit reversal permutation</a> for
+     * an array of size {@code n}. No-op if the right sized permutation has already been computed and stored.
+     * @param n the size of the array
      */
     private void precomputeBitReversalPermutation(int n) {
         if (bitReversalPermutation != null && bitReversalPermutation.length == n) {

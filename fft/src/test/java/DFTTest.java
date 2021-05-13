@@ -126,6 +126,21 @@ public class DFTTest {
     }
 
     @Test
+    public void testParallelFFT() {
+        DFT fft = new ParallelFFT();
+        DFT rfft = new ReferenceFFT();
+
+        int n = 128;
+        double[][] signal = new double[][] {Signal.generateSineComposite(n, new double[]{3, 10, 28}), new double[n]};
+
+        double[][] fx = fft.process(signal);
+        double[][] rFx = rfft.process(signal);
+
+        Assert.assertArrayEquals("Real results close to reference", rFx[0], fx[0], MAX_ERROR);
+        Assert.assertArrayEquals("Imaginary results close to reference", rFx[1], fx[1], MAX_ERROR);
+    }
+
+    @Test
     public void testValidateInput() {
         DFT dft = new DFT() {
             @Override
