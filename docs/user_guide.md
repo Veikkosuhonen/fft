@@ -21,3 +21,7 @@ Run the benchmark with `./gradlew benchmark` or `gradle benchmark`. This will ta
 ### Building from source
 
 To build the desktop application, run `gradle dist`. Builds are generated to jar `desktop/build/libs/desktop-1.0.jar`.
+
+### Tests
+
+To run unit tests, `gradle test`
