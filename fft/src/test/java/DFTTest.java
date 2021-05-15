@@ -20,7 +20,7 @@ public class DFTTest {
         */
         double[] frequencies = new double[]{3, 10, 28, 222};
         DFT[] dfts = new DFT[] {
-                new NaiveDFT(), new FFT(), new InPlaceFFT(), new OptimizedInPlaceFFT(), new ParallelFFT(), new ReferenceFFT()
+                new NaiveDFT(), new FFT(), new InPlaceFFT(), new OptimizedInPlaceFFT(), new ParallelFFT(), new OptimizedFFT2(), new ReferenceFFT()
         };
         for (DFT dft : dfts) {
             // test input sizes from 1 to 2048
