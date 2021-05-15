@@ -7,8 +7,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import utils.Signal;
 
-import java.util.Arrays;
-
 public class DCTTest {
 
     double MAX_ERROR = 0.001;

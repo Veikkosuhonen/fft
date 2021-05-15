@@ -98,10 +98,10 @@ public class OptimizedInPlaceFFT extends DFT {
      * @param n
      */
     private void computeRootsOfUnity(int n) {
-        if (rootOfUnityR != null && rootOfUnityR.length == n) {
+        int m = n / 2 * log2ceil(n);
+        if (rootOfUnityR != null && rootOfUnityR.length == m) {
             return;
         }
-        int m = n / 2 * log2ceil(n);
         rootOfUnityR = new double[m];
         rootOfUnityI = new double[m];
         double wlenR, wlenI, wR, wI;

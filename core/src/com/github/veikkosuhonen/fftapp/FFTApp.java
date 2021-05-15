@@ -11,7 +11,6 @@ import com.github.veikkosuhonen.fftapp.audio.SoundPlayer;
 
 import com.github.veikkosuhonen.fftapp.fft.dct.DFTDCT;
 import com.github.veikkosuhonen.fftapp.fft.dft.OptimizedInPlaceFFT;
-import com.github.veikkosuhonen.fftapp.fft.dft.ParallelFFT;
 import com.github.veikkosuhonen.fftapp.fft.utils.ArrayUtils;
 import com.github.veikkosuhonen.fftapp.fft.utils.CustomChunkQueue;
 import com.github.veikkosuhonen.fftapp.fft.utils.ChunkQueue;
@@ -105,7 +104,7 @@ public class FFTApp extends ApplicationAdapter {
 		player = new SoundPlayer(
 				AudioFile.get(),
 				CHUNK_SIZE,
-				false,
+				true,
 				queue
 		);
 		player.start();

@@ -37,7 +37,6 @@ public class BenchmarkSuite {
             fftTime[i] = benchmarkDFT(new FFT(), samples, trials, warmup);
             inPlaceFFTime[i] = benchmarkDFT(new InPlaceFFT(), samples, trials, warmup);
             parallelFFTTime[i] = benchmarkDFT(new ParallelFFT(), samples, trials, warmup);
-            hybridParallelFFTTime[i] = benchmarkDFT(new HybridParallelFFT(), samples, trials, warmup);
             optimizedInPlaceFFTTime[i] = benchmarkDFT(new OptimizedInPlaceFFT(), samples, trials, warmup);
             referenceFFTTime[i] = benchmarkDFT(new ReferenceFFT(), samples, trials, warmup);
             sampleSizes[i] = i + startAt;

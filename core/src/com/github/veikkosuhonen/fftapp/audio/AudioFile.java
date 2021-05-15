@@ -1,7 +1,5 @@
 package com.github.veikkosuhonen.fftapp.audio;
 
-import com.github.veikkosuhonen.fftapp.audio.FFmpegCaller;
-
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;

@@ -3,11 +3,45 @@ import org.junit.Assert;
 import org.junit.Test;
 import utils.Signal;
 
-import java.util.Arrays;
 
 public class DFTTest {
 
     double MAX_ERROR = 0.001;
+
+    /**
+     * Procedurally test each DFT algorithm. Only real outputs are checked.
+     */
+    @Test
+    public void testAllDFTCorrectness() {
+        /*
+        * frequencies in the generated signal. They should be in growing order.
+        * Note that these cannot be arbitrary: if two or more waves amplify each other at these frequencies,
+        * the calculated result will be 0.5 * N_of_resonating_waves, instead of the expected 0.5.
+        */
+        double[] frequencies = new double[]{3, 10, 28, 222};
+        DFT[] dfts = new DFT[] {
+                new NaiveDFT(), new FFT(), new InPlaceFFT(), new OptimizedInPlaceFFT(), new ParallelFFT(), new ReferenceFFT()
+        };
+        for (DFT dft : dfts) {
+            // test input sizes from 1 to 2048
+            for (int i = 0; i < 11; i++) {
+                int inputSize = 1 << i;
+                double[][] signal = new double[][] { Signal.generateSineComposite(inputSize, frequencies), new double[inputSize] };
+                double[][] result = new double[1][inputSize];
+                try {
+                    result = dft.process(signal);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Assert.fail("Exception when testing " + dft.getClass().getName() + " when N=" + inputSize);
+                }
+                // check if each frequency correctly calculated
+                for (double f : frequencies) {
+                    if ((int) f >= inputSize) break;
+                    Assert.assertEquals("Calculates freq " + f, 0.5, result[0][(int)f], MAX_ERROR);
+                }
+            }
+        }
+    }
 
     @Test
     public void testNaiveDFTMatchesReference() {
@@ -22,20 +56,6 @@ public class DFTTest {
 
         Assert.assertArrayEquals("Real results close to reference", rFx[0], Fx[0], 0.001);
         Assert.assertArrayEquals("Imaginary results close to reference", rFx[1], Fx[1], 0.001);
-    }
-
-    @Test
-    public void testNaiveDFTCorrectness() {
-        DFT dft = new NaiveDFT();
-
-        int n = 128;
-        double[][] signal = new double[][] {Signal.generateSineComposite(n, new double[]{3, 10, 28}), new double[n]};
-
-        double[][] fx = dft.process(signal);
-
-        Assert.assertEquals("Calculates freq 3", 0.5, fx[0][3], MAX_ERROR);
-        Assert.assertEquals("Calculates freq 10", 0.5, fx[0][10], MAX_ERROR);
-        Assert.assertEquals("Calculates freq 28", 0.5, fx[0][28], MAX_ERROR);
     }
 
     @Test
@@ -54,20 +74,6 @@ public class DFTTest {
     }
 
     @Test
-    public void testFFTCorrectness() {
-        DFT dft = new FFT();
-
-        int n = 128;
-        double[][] signal = new double[][] {Signal.generateSineComposite(n, new double[]{3, 10, 28}), new double[n]};
-
-        double[][] fx = dft.process(signal);
-
-        Assert.assertEquals("Calculates freq 3", 0.5, fx[0][3], MAX_ERROR);
-        Assert.assertEquals("Calculates freq 10", 0.5, fx[0][10], MAX_ERROR);
-        Assert.assertEquals("Calculates freq 28", 0.5, fx[0][28], MAX_ERROR);
-    }
-
-    @Test
     public void testInPlaceFFTMatchesReference() {
         DFT fft = new InPlaceFFT();
         DFT rfft = new ReferenceFFT();
@@ -80,20 +86,6 @@ public class DFTTest {
 
         Assert.assertArrayEquals("Real results close to reference", rFx[0], fx[0], MAX_ERROR);
         Assert.assertArrayEquals("Imaginary results close to reference", rFx[1], fx[1], MAX_ERROR);
-    }
-
-    @Test
-    public void testInPlaceFFTCorrectness() {
-        DFT dft = new InPlaceFFT();
-
-        int n = 128;
-        double[][] signal = new double[][] {Signal.generateSineComposite(n, new double[]{3, 10, 28}), new double[n]};
-
-        double[][] fx = dft.process(signal);
-
-        Assert.assertEquals("Calculates freq 3", 0.5, fx[0][3], MAX_ERROR);
-        Assert.assertEquals("Calculates freq 10", 0.5, fx[0][10], MAX_ERROR);
-        Assert.assertEquals("Calculates freq 28", 0.5, fx[0][28], MAX_ERROR);
     }
 
     @Test
@@ -112,20 +104,6 @@ public class DFTTest {
     }
 
     @Test
-    public void testOptimizedInPlaceFFTCorrectness() {
-        DFT dft = new OptimizedInPlaceFFT();
-
-        int n = 32;
-        double[][] signal = new double[][] {Signal.generateSineComposite(n, new double[]{3, 10, 28}), new double[n]};
-
-        double[][] fx = dft.process(signal);
-
-        Assert.assertEquals("Calculates freq 3", 0.5, fx[0][3], MAX_ERROR);
-        Assert.assertEquals("Calculates freq 10", 0.5, fx[0][10], MAX_ERROR);
-        Assert.assertEquals("Calculates freq 28", 0.5, fx[0][28], MAX_ERROR);
-    }
-
-    @Test
     public void testParallelFFTMatchesReference() {
         DFT fft = new ParallelFFT();
         DFT rfft = new ReferenceFFT();
@@ -138,20 +116,6 @@ public class DFTTest {
 
         Assert.assertArrayEquals("Real results close to reference", rFx[0], fx[0], MAX_ERROR);
         Assert.assertArrayEquals("Imaginary results close to reference", rFx[1], fx[1], MAX_ERROR);
-    }
-
-    @Test
-    public void testParallelFFTCorrectness() {
-        DFT dft = new ParallelFFT();
-
-        int n = 32;
-        double[][] signal = new double[][] {Signal.generateSineComposite(n, new double[]{3, 10, 28}), new double[n]};
-
-        double[][] fx = dft.process(signal);
-
-        Assert.assertEquals("Calculates freq 3", 0.5, fx[0][3], MAX_ERROR);
-        Assert.assertEquals("Calculates freq 10", 0.5, fx[0][10], MAX_ERROR);
-        Assert.assertEquals("Calculates freq 28", 0.5, fx[0][28], MAX_ERROR);
     }
 
     @Test

@@ -3,7 +3,6 @@ package com.github.veikkosuhonen.fftapp.audio;
 import com.github.veikkosuhonen.fftapp.fft.dct.DCT;
 import com.github.veikkosuhonen.fftapp.fft.utils.ChunkQueue;
 import com.github.veikkosuhonen.fftapp.fft.windowing.Hann;
-import com.github.veikkosuhonen.fftapp.fft.windowing.Square;
 import com.github.veikkosuhonen.fftapp.fft.windowing.WindowFunction;
 
 public class DCTProcessor {

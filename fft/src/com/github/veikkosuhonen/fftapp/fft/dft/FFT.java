@@ -43,8 +43,8 @@ public class FFT extends DFT {
 
         if (normalize) {
             for (int i = 0; i < dataRI[0].length; i++) {
-                dataRICopy[0][i] /= dataRI[0].length;
-                dataRICopy[1][i] /= dataRI[0].length;
+                dataRICopy[0][i] /= n;
+                dataRICopy[1][i] /= n;
             }
         }
         return dataRICopy;
