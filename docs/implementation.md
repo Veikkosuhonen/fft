@@ -11,11 +11,25 @@ The application with the rendering, UI, sound playing and processing logic is im
 TODO basic explanation. I admit the mathematical background is quite difficult for me to properly understand, but I hope I can vaguely explain the basic idea and why
 FFT is so _Fast_.
 
+### FFT optimizations
+
+I've implemented a few optimizations in the FFT-algorithms. 
+The unoptimized baseline is the FFT-class based on the recursive Cooley-Tukey decimation-in-time FFT algorithm. 
+One bottleneck here is not related to the algorithm but to the use of Complex-objects. D
+ropping those from the code improves speed by about 30%. 
+Recursion and array creation are also not great for performance, so another optimization is to use a triple for loop to perform the butterfly transform in place, avoiding array creation and recursion. 
+This is demonstrated in the InPlaceFFT-class, which however uses Complex-objects for readability and in the end doesn't gain any performance benefits. 
+The in-place computation makes it easy to precompute the 'twiddle factors' or 'roots of unity', which require lots of complex multiplications and two sine and cosine operations. 
+The bit reversal permutation used in reordering the input array can also be precomputed. 
+These optimizations together yield a significant performance increase when the algorithm is repeatedly called with the same input length. 
+The implementation OptimizedInPlaceFFT is 5-7 times faster than the recursive FFT using complex objects, and around 3 times faster than a recursive FFT without complex objects.
+It is also very narrowly faster than the Apache Commons Math FastFourierTransform implementation when running with the same input length.
+
 ### Motivation to use DCT instead of DFT
 
 Great question, the more I learn about the topic the less I understand it. The discrete cosine transform is commonly used for data compression (for example jpg and mp3) and less often for spectral analysis, which is what this application is doing. My belief is 1. that it is more efficient, as it does not consider imaginary values and phase, thus seemingly better fitting this domain, and 2. that it may have higher resolution. 2. is probably false but at least it gives me more values in the frequency range, even though I guess the information content is ultimately the same as with DFT. One does not simply overcome the [Nyquist limit](https://en.wikipedia.org/wiki/Nyquist_frequency).
 
-## Application dataflow
+## Application
 ![dataflow](https://github.com/Veikkosuhonen/fft/blob/main/docs/dataflow.png)
 
 Originally I intended to contain all the relevant algorithmic code in the fft-module, but the application logic grew quite complex, so I feel like it is important 
@@ -40,4 +54,4 @@ may also need to be done.
 7. Previously an array of floats containing the frequency data was directly sent to the shader program to be visualized, but in the current version, a spectrogram
 or a time-frequency representation image is rendered instead. This is done by writing the dct values into the left edge of a texture, and shifting the entire
 texture right each frame, so it is gradually filled. (This is actually horribly inefficient as the entire texture has to be uploaded to the GPU memory every frame, even when only a fraction of the data changes. But modern computers are too forgiving for me to bother myself implementing this properly with separate framebuffers)
-8. The shader programs are in the assets directory under the core module. `texture.frag` is the one used for rendering.
+8. The shader programs are in the assets directory under the core module. `texturebars.frag` is the one used for rendering.
