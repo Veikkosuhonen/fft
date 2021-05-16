@@ -7,18 +7,35 @@ import java.nio.file.Paths;
 import java.util.logging.Logger;
 
 /**
- * Singleton class for abstracting the audio file selection and possible conversion from the main application
+ * Singleton class for abstracting the UI dialogs, audio file selection and possible conversion from the main application
  */
-public class AudioFile {
+public class UI {
 
     private static final String TEMP_FILENAME = "fftapp_temp.wav";
     private static File audioFile;
 
     /**
+     * Shows a dialog prompting user to either use the microphone or the audio file option
+     * @return if user chose microphone
+     */
+    public static boolean useMicrophone() {
+        Object[] options = {"Audio file", "Microphone"};
+        int choice = JOptionPane.showOptionDialog(null,
+                "Please select audio input method",
+                "Audio input",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,     //do not use a custom Icon
+                options,  //the titles of buttons
+                options[0]); //default button title
+        return choice == 1;
+    }
+
+    /**
      * Prompts user to select a file and converts it from mp3 to wav if needed, and finally returns a wav file.
      * @return a wav file
      */
-    public static File get() {
+    public static File selectAudioFile() {
         chooseDefaultFile();
         if (audioFile == null) {
             chooseFile();

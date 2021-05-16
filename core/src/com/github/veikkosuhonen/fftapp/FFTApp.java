@@ -5,7 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 
-import com.github.veikkosuhonen.fftapp.audio.AudioFile;
+import com.github.veikkosuhonen.fftapp.audio.UI;
 import com.github.veikkosuhonen.fftapp.audio.DCTProcessor;
 import com.github.veikkosuhonen.fftapp.audio.SoundPlayer;
 
@@ -15,6 +15,7 @@ import com.github.veikkosuhonen.fftapp.fft.utils.ArrayUtils;
 import com.github.veikkosuhonen.fftapp.fft.utils.CustomChunkQueue;
 import com.github.veikkosuhonen.fftapp.fft.utils.ChunkQueue;
 
+import java.io.File;
 import java.util.ArrayDeque;
 import java.util.Queue;
 
@@ -101,10 +102,14 @@ public class FFTApp extends ApplicationAdapter {
 				queue
 		);
 
+		File audioFile = null;
+		boolean useMicrophone = UI.useMicrophone();
+		if (!useMicrophone) audioFile = UI.selectAudioFile();
+
 		player = new SoundPlayer(
-				AudioFile.get(),
+				audioFile,
 				CHUNK_SIZE,
-				false,
+				useMicrophone,
 				queue
 		);
 		player.start();
