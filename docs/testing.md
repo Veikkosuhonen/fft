@@ -16,6 +16,8 @@ Each algorithm is ran for 50 warmup rounds and 100 trial rounds for each sample 
 
 ![](https://github.com/Veikkosuhonen/fft/blob/main/docs/benchmark1.png)
 
+Results for DFT and DCT algorithms with sample sizes (powers of two) on the X-axis and average runtime on the Y-axis (milliseconds)
+
 Some textual benchmark results. Readers should see the implementation document and the corresponding classes in the `dft` module for details.
 
 ```
