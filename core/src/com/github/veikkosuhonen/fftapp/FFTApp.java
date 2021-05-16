@@ -104,7 +104,7 @@ public class FFTApp extends ApplicationAdapter {
 		player = new SoundPlayer(
 				AudioFile.get(),
 				CHUNK_SIZE,
-				true,
+				false,
 				queue
 		);
 		player.start();

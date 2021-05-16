@@ -20,7 +20,7 @@ public class DFTTest {
         */
         double[] frequencies = new double[]{3, 10, 28, 222};
         DFT[] dfts = new DFT[] {
-                new NaiveDFT(), new FFT(), new InPlaceFFT(), new OptimizedInPlaceFFT(), new ParallelFFT(), new OptimizedFFT2(), new ReferenceFFT()
+                new NaiveDFT(), new FFT(), new InPlaceFFT(), new OptimizedInPlaceFFT(), new ParallelFFT(), new FFT2(), new ReferenceFFT()
         };
         for (DFT dft : dfts) {
             // test input sizes from 1 to 2048
@@ -37,7 +37,7 @@ public class DFTTest {
                 // check if each frequency correctly calculated
                 for (double f : frequencies) {
                     if ((int) f >= inputSize) break;
-                    Assert.assertEquals("Calculates freq " + f, 0.5, result[0][(int)f], MAX_ERROR);
+                    Assert.assertEquals(dft.getClass().getName() + " calculates freq " + f + ", N=" + inputSize, 0.5, result[0][(int)f], MAX_ERROR);
                 }
             }
         }

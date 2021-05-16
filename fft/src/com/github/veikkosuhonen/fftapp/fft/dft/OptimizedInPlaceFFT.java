@@ -1,5 +1,7 @@
 package com.github.veikkosuhonen.fftapp.fft.dft;
 
+import java.util.Arrays;
+
 public class OptimizedInPlaceFFT extends DFT {
 
     private int[] bitReversalPermutation;
@@ -104,7 +106,7 @@ public class OptimizedInPlaceFFT extends DFT {
         }
         rootOfUnityR = new double[m];
         rootOfUnityI = new double[m];
-        double wlenR, wlenI, wR, wI;
+        double wlenR, wlenI, wR, wI, wR0;
         int k = 0;
         for (int len = 2; len <= n; len <<= 1) {
             double angle = 2 * Math.PI / len;
@@ -119,7 +121,7 @@ public class OptimizedInPlaceFFT extends DFT {
                     rootOfUnityR[k] = wR;
                     rootOfUnityI[k] = wI;
                     // w = w * wlen
-                    double wR0 = wR * wlenR - wI * wlenI;
+                    wR0 = wR * wlenR - wI * wlenI;
                     wI = wR * wlenI + wI * wlenR;
                     wR = wR0;
                     k++;

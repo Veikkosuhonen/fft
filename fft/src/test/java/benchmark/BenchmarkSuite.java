@@ -3,7 +3,6 @@ package benchmark;
 import com.github.veikkosuhonen.fftapp.fft.dct.DCT;
 import com.github.veikkosuhonen.fftapp.fft.dct.DFTDCT;
 import com.github.veikkosuhonen.fftapp.fft.dct.FastDCT;
-import com.github.veikkosuhonen.fftapp.fft.dct.NaiveDCT;
 import com.github.veikkosuhonen.fftapp.fft.dft.*;
 import utils.ChartBuilder;
 import utils.PlotBuilder;
@@ -26,8 +25,8 @@ public class BenchmarkSuite {
         double[] fftTime = new double[sizes];
         double[] inPlaceFFTime = new double[sizes];
         double[] parallelFFTTime = new double[sizes];
-        double[] hybridParallelFFTTime = new double[sizes];
         double[] optimizedInPlaceFFTTime = new double[sizes];
+        double[] fft4Time = new double[sizes];
         double[] referenceFFTTime = new double[sizes];
 
         System.out.println("===== Testing DFT algorithms (" + (2 << startAt) + " to " + (2 << startAt + sizes - 1) + " samples) ======");
@@ -38,6 +37,7 @@ public class BenchmarkSuite {
             inPlaceFFTime[i] = benchmarkDFT(new InPlaceFFT(), samples, trials, warmup);
             parallelFFTTime[i] = benchmarkDFT(new ParallelFFT(), samples, trials, warmup);
             optimizedInPlaceFFTTime[i] = benchmarkDFT(new OptimizedInPlaceFFT(), samples, trials, warmup);
+            fft4Time[i] = benchmarkDFT(new FFT2(), samples, trials, warmup);
             referenceFFTTime[i] = benchmarkDFT(new ReferenceFFT(), samples, trials, warmup);
             sampleSizes[i] = i + startAt;
 
@@ -47,6 +47,7 @@ public class BenchmarkSuite {
             System.out.println("InPlaceFFT   = " + inPlaceFFTime[i] + " ms");
             System.out.println("ParallelFFT  = " + parallelFFTTime[i] + " ms");
             System.out.println("Optimized    = " + optimizedInPlaceFFTTime[i] + " ms");
+            System.out.println("FFT4  = " + fft4Time[i] + " ms");
             System.out.println("ReferenceFFT = " + referenceFFTTime[i] + " ms");
             System.out.println();
         }
@@ -79,8 +80,8 @@ public class BenchmarkSuite {
                         .series(fftTime, sampleSizes, "FFT")
                         .series(inPlaceFFTime, sampleSizes, "In-place FFT")
                         .series(parallelFFTTime, sampleSizes, "Parallel FFT")
-                        .series(hybridParallelFFTTime, sampleSizes, "Hybrid Parallel FFT")
                         .series(optimizedInPlaceFFTTime, sampleSizes, "Optimized FFT")
+                        .series(fft4Time, sampleSizes, "FFT4")
                         .series(referenceFFTTime, sampleSizes, "Reference FFT")
                         .build("Average DFT run times", "n samples (log2)", "runtime (ms)"))
                 .chart(new ChartBuilder()
