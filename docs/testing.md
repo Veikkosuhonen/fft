@@ -2,17 +2,21 @@
 
 ## Unit tests
 
-The algorithms and utility classes in the project are unit tested. Code coverage report is generated with JaCoCo:
+All the algorithms and utility classes in the project are tested. Code coverage report is generated with JaCoCo:
 ![](https://github.com/Veikkosuhonen/fft/blob/main/docs/jacoco_report.png)
 
 The important DFT correctness tests are in [DFTTest](https://github.com/Veikkosuhonen/fft/blob/main/fft/src/test/java/DFTTest.java). 
 DFT algorithms are tested on sample sizes from 1 to 2048 on a generated signal with known non-resonating frequencies, making correctness easy to test. 
 For example, when the signal has a period 3 sine wave, `dftResult[3] == 0.5`. 
 
+Some other important unit tests are [DCTTest](https://github.com/Veikkosuhonen/fft/blob/main/fft/src/test/java/DCTTest.java) for DCTs and
+[ChunkQueueTest](https://github.com/Veikkosuhonen/fft/blob/main/fft/src/test/java/ChunkQueueTest.java) for the synchronized queue data structure. 
+
 ## Performance testing
 
 The performance of DFT- and DCT-algorithms are tested with different sample sizes and the results are plotted. 
-Each algorithm is ran for 50 warmup rounds and 100 trial rounds for each sample size and the runtime average is saved.
+Each algorithm is ran for 50 warmup rounds and 100 trial rounds for each sample size and the runtime average is saved. 
+The benchmark main-class is [BenchmarkSuite](https://github.com/Veikkosuhonen/fft/blob/main/fft/src/test/java/benchmark/BenchmarkSuite.java).
 
 ![](https://github.com/Veikkosuhonen/fft/blob/main/docs/benchmark1.png)
 
