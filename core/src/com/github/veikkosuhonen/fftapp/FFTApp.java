@@ -14,10 +14,9 @@ import com.github.veikkosuhonen.fftapp.fft.dft.OptimizedInPlaceFFT;
 import com.github.veikkosuhonen.fftapp.fft.utils.ArrayUtils;
 import com.github.veikkosuhonen.fftapp.fft.utils.CustomChunkQueue;
 import com.github.veikkosuhonen.fftapp.fft.utils.ChunkQueue;
+import com.github.veikkosuhonen.fftapp.fft.utils.FloatQueue;
 
 import java.io.File;
-import java.util.ArrayDeque;
-import java.util.Queue;
 
 import static com.badlogic.gdx.Gdx.*;
 
@@ -65,7 +64,7 @@ public class FFTApp extends ApplicationAdapter {
 	/**
 	 * The queue that holds maximum values of each frame used in averaged normalization
 	 */
-	Queue<Float> maxValue;
+	FloatQueue maxValue;
 
 	/**
 	 * The average maximum value of the last normalizeLag frames
@@ -89,7 +88,7 @@ public class FFTApp extends ApplicationAdapter {
 		initializeGraphics();
 		createPixmapTexture();
 
-		maxValue = new ArrayDeque<>(normalizeLag);
+		maxValue = new FloatQueue(normalizeLag);
 		avgMax = 0.0f;
 
 		queue = new CustomChunkQueue(QUEUE_LENGTH, CHUNK_SIZE);
@@ -169,10 +168,10 @@ public class FFTApp extends ApplicationAdapter {
 
 		// calculate the average max for normalization
 		float max = ArrayUtils.max(result);
-		maxValue.add(max);
+		maxValue.offer(max);
 		avgMax += max;
 		if (maxValue.size() >= normalizeLag) {
-			avgMax -= maxValue.remove();
+			avgMax -= maxValue.poll();
 		}
 		// return the normalized data
 		return ArrayUtils.scale(result, 0, avgMax / normalizeFactor, 0, 1);

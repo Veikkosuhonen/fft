@@ -15,13 +15,13 @@ public class BenchmarkSuite {
     public static void main(String[] args) {
         System.out.println("############### Starting benchmark ##############");
 
-        int trials = 100; // how many trials to run
-        int warmup = 50; // how many warmup runs to do
-        int sizes = 8; // how many (power of two) sizes of samples to do
-        int startAt = 8; // smallest (power of two) sample size
+        int trials = 200; // how many trials to run
+        int warmup = 100; // how many warmup runs to do
+        int sizes = 3; // how many (power of two) sizes of samples to do
+        int startAt = 5; // smallest (power of two) sample size
         int[] sampleSizes = new int[sizes]; // For X-axis values
 
-        //double[] naiveDFTTime = new double[sizes];
+        double[] naiveDFTTime = new double[sizes];
         double[] fftTime = new double[sizes];
         double[] inPlaceFFTime = new double[sizes];
         double[] parallelFFTTime = new double[sizes];
@@ -32,7 +32,7 @@ public class BenchmarkSuite {
         System.out.println("===== Testing DFT algorithms (" + (2 << startAt) + " to " + (2 << startAt + sizes - 1) + " samples) ======");
         for (int i = 0; i < sizes; i++) {
             int samples = 2 << i + startAt;
-            //naiveDFTTime[i] = samples > 1024 ? 0 : benchmarkDFT(new NaiveDFT(), samples, trials, warmup); // skip naive implementation on large samples
+            naiveDFTTime[i] = samples > 1024 ? 0 : benchmarkDFT(new NaiveDFT(), samples, trials, warmup); // skip naive implementation on large samples
             fftTime[i] = benchmarkDFT(new FFT(), samples, trials, warmup);
             inPlaceFFTime[i] = benchmarkDFT(new InPlaceFFT(), samples, trials, warmup);
             parallelFFTTime[i] = benchmarkDFT(new ParallelFFT(), samples, trials, warmup);
@@ -42,7 +42,7 @@ public class BenchmarkSuite {
             sampleSizes[i] = i + startAt;
 
             System.out.println("Sample size  = " + samples);
-            //System.out.println("Naive        = " + naiveDFTTime[i] + " ms");
+            System.out.println("Naive        = " + naiveDFTTime[i] + " ms");
             System.out.println("FFT          = " + fftTime[i] + " ms");
             System.out.println("InPlaceFFT   = " + inPlaceFFTime[i] + " ms");
             System.out.println("FFT2         = " + fft2Time[i] + " ms");
