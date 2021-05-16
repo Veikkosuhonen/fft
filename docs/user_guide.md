@@ -17,3 +17,11 @@ Once (if) you got it running, maximize the window and enjoy :)
 ### Running benchmarks
 
 Run the benchmark with `./gradlew benchmark` or `gradle benchmark`. This will take a few seconds and finally show a plot of the results.
+
+### Building from source
+
+To build the desktop application, run `gradle dist`. Builds are generated to jar `desktop/build/libs/desktop-1.0.jar`.
+
+### Tests
+
+To run unit tests, `gradle test`
