@@ -30,14 +30,10 @@ The implementation is in the `core` module.
 
 ## Gradle
 
-`gradle run` to launch the desktop application. (Set `AUDIO_FILE` to point to a wav file if you want to skip the file-choosing dialog).
+`gradle run` to launch the desktop application.
 
 `gradle test` to run tests in the `fft` module. To read the Jacoco test report, open `fft/build/jacocoHtml/index.html`.
 
-`gradle benchmark` to run benchmark suite and display results (very WIP)
+`gradle benchmark` to run benchmark suite and display results.
 
 `gradle check` to run checkstyle.
-
-## Troubleshooting
-
-If you get an error `Inconsistency detected by ld.so:...` when running the application on Linux, please make sure you are using JDK 8. You can explicitly specify it by adding the option `-Dorg.gradle.java.home=<path-to-jdk8>`. Currently audio may not work on Linux.
