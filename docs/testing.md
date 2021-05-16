@@ -5,6 +5,10 @@
 The algorithms and utility classes in the project are unit tested. Code coverage report is generated with JaCoCo:
 ![](https://github.com/Veikkosuhonen/fft/blob/main/docs/jacoco_report.png)
 
+The important DFT correctness tests are in [DFTTest](https://github.com/Veikkosuhonen/fft/blob/main/fft/src/test/java/DFTTest.java). 
+DFT algorithms are tested on sample sizes from 1 to 2048 on a generated signal with known non-resonating frequencies, making correctness easy to test. 
+For example, when the signal has a period 3 sine wave, `dftResult[3] == 0.5`. 
+
 ## Performance testing
 
 The performance of DFT- and DCT-algorithms are tested with different sample sizes and the results are plotted. 
@@ -12,38 +16,46 @@ Each algorithm is ran for 50 warmup rounds and 100 trial rounds for each sample 
 
 ![](https://github.com/Veikkosuhonen/fft/blob/main/docs/benchmark1.png)
 
-A quick look at the results with the 5 discrete Fourier transform algorithms implemented in the project. The naive implementation runs in `O(n^2)` time and the efficient implementations in `O(n*log(n))`. 
-The FFT implementation is a straightforward recursive version of the Cooley-Tukey -algorithm, and the InPlaceFFT and Optimized FFT use a variant of it which reorders the input data and does the computation in-place without recursive calls. 
+Results for DFT and DCT algorithms with sample sizes (powers of two) on the X-axis and average runtime on the Y-axis (milliseconds)
+
+Some textual benchmark results. Readers should see the implementation document and the corresponding classes in the `dft` module for details.
 
 ```
-Sample size  = 32
-Naive        = 0.076 ms
-FFT          = 0.025 ms
-InPlaceFFT   = 0.015 ms
-Optimized    = 0.015 ms
-ReferenceFFT = 0.011 ms
+Sample size  = 64
+Naive        = 0.078 ms
+FFT          = 0.024 ms
+InPlaceFFT   = 0.008 ms
+FFT2         = 0.014 ms
+ParallelFFT  = 0.021 ms
+Optimized    = 0.004 ms
+ReferenceFFT = 0.006 ms
 
 Sample size  = 256
-Naive        = 1.32 ms
-FFT          = 0.016 ms
-InPlaceFFT   = 0.037 ms
-Optimized    = 0.011 ms
-ReferenceFFT = 0.0049 ms
+Naive        = 1.04 ms
+FFT          = 0.017 ms
+InPlaceFFT   = 0.013 ms
+FFT2         = 0.012 ms
+ParallelFFT  = 0.019 ms
+Optimized    = 0.018 ms
+ReferenceFFT = 0.011 ms
 ```
-This already shows that the naive DFT implementation quickly becomes extremely slow compared to the efficient algorithms. In larger benchmarks it is excluded. 
+At small sample sizes the comparison fluctuates a lot and there is no clear winner. 
+But it is clear that the naive DFT implementation quickly becomes extremely slow compared to the efficient algorithms. In larger benchmarks it is excluded. 
 ```
 Sample size  = 16384
-FFT          = 1.5 ms
-InPlaceFFT   = 1.7 ms
-Optimized    = 0.61 ms
-ReferenceFFT = 0.32 ms
+FFT          = 1.47 ms
+InPlaceFFT   = 1.35 ms
+ParallelFFT  = 0.44 ms
+Optimized    = 0.32 ms
+FFT2         = 1.05 ms
+ReferenceFFT = 0.36 ms
 
 Sample size  = 65536
-FFT          = 7.0 ms
-InPlaceFFT   = 6.8 ms
-Optimized    = 3.1 ms
-ReferenceFFT = 1.7 ms
+FFT          = 6.46 ms
+InPlaceFFT   = 6.39 ms
+ParallelFFT  = 1.88 ms
+Optimized    = 1.52 ms
+FFT2         = 4.70 ms
+ReferenceFFT = 1.68 ms
 ```
-As can be seen from the results, at very large sample sizes the scaling of the efficient algorithms is quite close to linear. 
-The FFT and InPlaceFFT are tied, hinting that the effect of the recursive calls is quite minimal for performance. 
-What differentiates them from the Optimized version is the use of Complex-objects, which improves readability but imposes significant object and function calling overhead. The Optimized version also caches some computation results to improve performance on calls with the same sample size.
+At large sample sizes the scaling of the efficient algorithms is quite close to linear. 
